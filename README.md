@@ -35,7 +35,7 @@ npm start   # http://localhost:8080
 
 ## Entwicklung
 
-Voraussetzung ist Node.js ab Version 18.
+Voraussetzung ist Node.js ab Version 22.16.
 
 ```bash
 npm install          # Werkzeuge für Tests, Lint und Formatierung

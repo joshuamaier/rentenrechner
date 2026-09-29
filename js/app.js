@@ -214,9 +214,10 @@
         : 'direkt nach dem Sparende',
     );
 
-    let spar = '';
-    if (p.sparIntervall === 1) spar = `≈ ${euro(p.sparrate / 12)} pro Monat`;
-    else spar = `= ${euro(p.sparrate * p.sparIntervall)} pro Jahr`;
+    let spar =
+      p.sparIntervall === 1
+        ? `≈ ${euro(p.sparrate / 12)} pro Monat`
+        : `= ${euro(p.sparrate * p.sparIntervall)} pro Jahr`;
     if (p.sparDynamik && a.sparJahre > 1)
       spar += ` · letzter Beitrag ${euro(p.sparrate * Math.pow(1 + p.sparDynamik, a.sparJahre - 1), 2)}`;
     setzeHilfe('sparrate', spar);

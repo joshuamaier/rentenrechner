@@ -76,18 +76,14 @@
 
   /** Bisektion für monoton steigendes f auf [lo, hi]. */
   function bisektion(f, ziel, lo, hi) {
-    let flo = f(lo);
+    const flo = f(lo);
     const fhi = f(hi);
     if (ziel < flo - EPS || ziel > fhi + EPS) return NaN;
     for (let n = 0; n < 200; n++) {
       const mid = (lo + hi) / 2;
       const fmid = f(mid);
-      if (fmid < ziel) {
-        lo = mid;
-        flo = fmid;
-      } else {
-        hi = mid;
-      }
+      if (fmid < ziel) lo = mid;
+      else hi = mid;
       if (hi - lo < 1e-12) break;
     }
     return (lo + hi) / 2;
