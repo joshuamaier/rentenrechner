@@ -15,7 +15,7 @@
   const f2 = nf(2, 2);
   const fProz = nf(0, 2);
 
-  const euro = (v, nachkomma = 0) => `${(nachkomma ? f2 : f0).format(v)} €`;
+  const euro = (v, nachkomma = 0) => `${(nachkomma ? f2 : f0).format(v)}\u00a0€`;
   const prozent = (v) => `${fProz.format(v * 100)} %`;
   const RHYTHMUS = { 12: 'Monat', 4: 'Quartal', 2: 'Halbjahr', 1: 'Jahr' };
 
