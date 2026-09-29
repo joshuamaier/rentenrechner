@@ -131,6 +131,12 @@ button, input, select { font: inherit; color: inherit; }
 .karte-kopf h2, .abschnitt-titel { font-size: 1.1rem; }
 .abschnitt-titel { margin-bottom: 12px; }
 
+.ergebnis-text { margin-bottom: 12px; font-size: 1rem; line-height: 1.65; max-width: none; }
+.ergebnis-text p { margin: 0; max-width: 80ch; }
+.ergebnis-text p + p { margin-top: 10px; }
+.ergebnis-text strong { font-weight: 700; }
+.ergebnis-text.veraltet { opacity: 0.45; }
+
 /* ---------- Berechnungsziel ---------- */
 .ziel-auswahl { border: 0; margin: 0; padding: 0; min-width: 0; }
 .ziel-auswahl > legend { font-weight: 600; font-size: 1.05rem; margin-bottom: 12px; padding: 0; }
@@ -189,6 +195,14 @@ button, input, select { font: inherit; color: inherit; }
 .phase-kopf { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
 .phase-kopf h2 { font-size: 1.2rem; }
 .phase-sub { margin: 0; color: var(--text-3); font-size: 0.88rem; }
+.phase-kennzahl { margin-left: auto; text-align: right; min-width: 0; }
+.phase-kennzahl:empty { display: none; }
+.kennzahl-titel { color: var(--text-2); font-size: 0.8rem; }
+.kennzahl-wert { font-size: 1.35rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+.kennzahl-wert .kachel-einheit { font-size: 0.8rem; }
+.kennzahl-zusatz { color: var(--text-3); font-size: 0.78rem; }
+.phase-kennzahl.veraltet { opacity: 0.45; }
+
 .phase-nr {
   display: grid; place-items: center; width: 32px; height: 32px; flex: none;
   border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border);
@@ -197,7 +211,7 @@ button, input, select { font: inherit; color: inherit; }
 
 .felder { display: grid; gap: 16px; }
 .feld-reihe { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.feld { display: grid; gap: 5px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.feld { display: grid; gap: 5px; align-content: start; min-width: 0; margin: 0; padding: 0; border: 0; }
 .feld[hidden] { display: none; }
 .feld > label, .feld > legend { font-weight: 500; font-size: 0.92rem; padding: 0; }
 .feld-modus > legend { margin-bottom: 5px; }
@@ -321,6 +335,7 @@ button, input, select { font: inherit; color: inherit; }
 @media (max-width: 900px) {
   .phasen { grid-template-columns: minmax(0, 1fr); }
   .phasen-pfeil { justify-content: center; transform: rotate(90deg); }
+  .phase-kopf { flex-wrap: wrap; }
   .option-knoepfe { margin-left: 0; }
 }
 @media (max-width: 520px) {

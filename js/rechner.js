@@ -40,7 +40,7 @@
     rente: 1500,
     rentenIntervall: 12,
     rentenDynamik: 0,
-    entnahmeModus: 'dauer', // 'dauer' (Kapitalverzehr) | 'ewig' (nur Zinsen)
+    entnahmeModus: 'ewig', // 'dauer' (Kapitalverzehr) | 'ewig' (nur Zinsen)
     entnahmeDauer: 25,
     restkapital: 0,
     vorschuessig: true,
