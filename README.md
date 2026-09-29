@@ -24,20 +24,24 @@ npm test    # Tests des Rechenkerns (Node ≥ 18)
 │ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]         │
 │ Zahlungen vor-/nachschüssig · Startjahr · Link · Reset       │
 ├───────────────────────────┬──────────────────────────────────┤
-│ 1 Ansparphase             │ 2 Auszahlphase                   │
+│ 1 Ansparphase   [Kapital] │ 2 Auszahlphase           [Rente] │
 │  Alter heute / Sparen bis │  Auszahlung ab Alter / Zinssatz  │
 │  Anfangskapital           │  Einmalige Teilauszahlung        │
 │  Sparbeitrag + Rhythmus   │  Kapitalverzehr | Ewige Rente    │
 │  Zinssatz / Dynamik       │  Dauer / Restkapital             │
 │                           │  Rente + Rhythmus / Dynamik      │
 ├───────────────────────────┴──────────────────────────────────┤
-│ Ergebnis-Kacheln (Zielgröße hervorgehoben)                   │
+│ Ergebnis als Fließtext + Kacheln (Zielgröße hervorgehoben)   │
 ├──────────────────────────────────────────────────────────────┤
 │ Grafik: Kapitalverlauf, Summe Ein-/Auszahlungen, Phasen      │
 ├──────────────────────────────────────────────────────────────┤
 │ Tabelle: Werte pro Jahr (+ CSV-Export)                       │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+Die Kopfzeilen der beiden Phasen zeigen die Hauptergebnisse: das angesparte Kapital und die Rente.
+Darunter fasst ein Fließtext das Ergebnis in ganzen Sätzen zusammen, gefolgt von den Kennzahl-Kacheln.
+Voreingestellt ist eine **ewige Rente** (nur Zinsen werden ausgezahlt).
 
 Das jeweils berechnete Feld wird direkt im Formular als **„berechnet“** markiert (gestrichelter Rahmen)
 und ist schreibgeschützt. Beim Wechsel des Rechenziels wird das bisherige Ergebnis zur neuen Eingabe –
