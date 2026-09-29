@@ -1,0 +1,64 @@
+/*
+ * Rahmen der eigenständigen Seite (Kopf, Fuß, Seitenbreite).
+ * Beim Einbetten in eine andere Seite wird nur rentenrechner.css gebraucht.
+ */
+:root {
+  --seite-paper: #fbfaf6;
+  --seite-ink: #1b2330;
+  --seite-ink-soft: #5b6472;
+  --seite-line: rgba(27, 35, 48, 0.13);
+  --seite-gold-ink: #7a5f26;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--seite-paper);
+  color: var(--seite-ink);
+  font-family: "Inter", "Inter Placeholder", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.kopf-inhalt, .seite, .fuss {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.kopf-inhalt { padding-top: 56px; padding-bottom: 36px; }
+.kopf-kicker {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--seite-gold-ink);
+}
+.kopf h1 {
+  margin: 0 0 14px;
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.12;
+  letter-spacing: -1.2px;
+  font-weight: 600;
+}
+.kopf-lead { margin: 0; max-width: 640px; font-size: 18px; line-height: 1.7; color: var(--seite-ink-soft); }
+
+.seite { padding-bottom: 48px; }
+
+.fuss {
+  padding-top: 24px;
+  padding-bottom: 40px;
+  border-top: 1px solid var(--seite-line);
+  color: var(--seite-ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.fuss p { margin: 0 0 8px; max-width: 760px; }
+.fuss a { color: var(--seite-ink); }
+
+@media (max-width: 520px) {
+  .kopf-inhalt { padding-top: 36px; padding-bottom: 24px; }
+  .kopf-lead { font-size: 16px; }
+  .kopf-inhalt, .seite, .fuss { padding-left: 16px; padding-right: 16px; }
+}

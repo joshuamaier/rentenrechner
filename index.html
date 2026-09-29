@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rentenrechner</title>
   <meta name="description" content="Rentenrechner mit Anspar- und Auszahlphase: Kapitalaufbau, Teilauszahlung, befristete oder ewige Rente – vorwärts und rückwärts gerechnet.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/seite.css">
+  <link rel="stylesheet" href="css/rentenrechner.css">
 </head>
 <body>
   <header class="kopf">
     <div class="kopf-inhalt">
+      <p class="kopf-kicker">Altersvorsorge · Rechner</p>
       <h1>Rentenrechner</h1>
-      <p>Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
+      <p class="kopf-lead">Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
     </div>
   </header>
 
-  <main class="seite">
+  <main class="seite rr">
     <!-- Berechnungsziel -->
     <section class="karte ziel-karte" aria-labelledby="ziel-titel">
       <h2 id="ziel-titel" class="sr-only">Berechnungsziel</h2>
@@ -224,6 +226,10 @@
       effektiven Jahresrendite). Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten und Inflation
       (Rentendynamik kann als Inflationsausgleich genutzt werden). In einer Ruhephase zwischen Sparende und
       Auszahlbeginn wird das Kapital mit dem Zinssatz der Ansparphase verzinst.
+    </p>
+    <p>
+      Ein Projekt von <a href="https://joshuamaier.de">Joshua Maier</a> ·
+      <a href="https://github.com/joshuamaier/rentenrechner">Quellcode auf GitHub</a> (MIT-Lizenz)
     </p>
   </footer>
 

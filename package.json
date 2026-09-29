@@ -1,11 +1,17 @@
 {
   "name": "rentenrechner",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.1.0",
   "description": "Rentenrechner mit Anspar- und Auszahlphase, Rückwärtsrechnung, Grafik und Jahrestabelle",
+  "author": "Joshua Maier (https://joshuamaier.de)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuamaier/rentenrechner.git"
+  },
+  "homepage": "https://joshuamaier.de/blog/rentenrechner.html",
+  "keywords": ["rentenrechner", "altersvorsorge", "sparplan", "entnahmeplan", "finanzmathematik"],
   "scripts": {
     "test": "node --test tests/*.test.js",
     "start": "npx http-server -c-1 -p 8080 ."
-  },
-  "license": "UNLICENSED"
+  }
 }

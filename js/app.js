@@ -49,19 +49,24 @@
   let zustand = { ziel: 'rente', werte: standard() };
   let letztesErgebnis = null;
 
+  // Liefert true, wenn der Hash Rechnerwerte enthielt (ein Sprunglink wie #rechner zählt nicht).
   function ausHash() {
     const h = location.hash.replace(/^#/, '');
-    if (!h) return;
+    if (!h) return false;
     const q = new URLSearchParams(h);
     const werte = standard();
+    let gefunden = q.has('ziel');
     for (const [k, v] of q) {
       if (k === 'ziel') continue;
       if (!(k in werte)) continue;
+      gefunden = true;
       if (k === 'entnahmeModus') werte[k] = v === 'ewig' ? 'ewig' : 'dauer';
       else if (k === 'vorschuessig') werte[k] = v !== 'false';
       else if (Number.isFinite(Number(v))) werte[k] = Number(v);
     }
+    if (!gefunden) return false;
     zustand = { ziel: R.ZIELE[q.get('ziel')] ? q.get('ziel') : 'rente', werte };
+    return true;
   }
 
   function inHash() {
@@ -141,7 +146,9 @@
   // ---------- Berechnung & Darstellung ----------
   const diagramm = new window.Diagramm($('#diagramm'), $('#legende'));
 
-  function berechnen() {
+  // Die Werte landen erst nach der ersten Eingabe im URL-Hash, damit ein eingebetteter
+  // Rechner die Adresse der Seite beim Laden nicht verändert.
+  function berechnen(mitHash = true) {
     aktualisiereFeldZustand();
     const erg = R.berechne(zustand.werte, zustand.ziel);
     zeigeMeldungen(erg);
@@ -158,7 +165,7 @@
     zeigeKacheln(erg);
     diagramm.setze(erg);
     zeigeTabelle(erg);
-    inHash();
+    if (mitHash) inHash();
   }
 
   function schreibeAusgabe(erg) {
@@ -467,7 +474,7 @@
   $('#btn-csv').addEventListener('click', csvHerunterladen);
 
   // ---------- Start ----------
-  ausHash();
+  const ausLink = ausHash();
   schreibeAlleFelder();
-  berechnen();
+  berechnen(ausLink);
 })();
