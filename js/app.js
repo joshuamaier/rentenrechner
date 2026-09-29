@@ -164,13 +164,16 @@
     if (erg.fehler) {
       const ausgabe = $(`#f-${R.ZIELE[zustand.ziel].feld}`);
       ausgabe.value = '–';
+      zeigeHinweiseAnFeldern([]);
       return;
     }
     letztesErgebnis = erg;
+    const plausi = window.Hinweise.pruefe(erg);
     schreibeAusgabe(erg);
     schreibeHilfen(erg);
+    zeigeHinweiseAnFeldern(plausi);
     zeigeKennzahlen(erg);
-    zeigeText(erg);
+    zeigeText(erg, plausi);
     zeigeKacheln(erg);
     diagramm.setze(erg);
     zeigeTabelle(erg);
@@ -298,7 +301,7 @@
   // ---------- Ergebnis als Fließtext ----------
   // Wiederholt die Eingaben und beschreibt das Ergebnis in Alltagssprache, ohne Fachbegriffe.
   // Absätze bestehen aus Textteilen; { b: '…' } wird fett dargestellt.
-  function zeigeText(erg) {
+  function zeigeText(erg, plausi = []) {
     const p = erg.params;
     const a = erg.anspar;
     const e = erg.entnahme;
@@ -340,7 +343,7 @@
     an.push('. ');
     if (a.sparJahre > 0 && p.sparrate > 0) {
       an.push(`Bis du ${p.sparEndeAlter} bist, legst du `, B(sparText), ' zur Seite');
-      if (p.sparDynamik) an.push(` und erhöhen den Betrag jedes Jahr um ${pz(p.sparDynamik)}`);
+      if (p.sparDynamik) an.push(` und erhöhst den Betrag jedes Jahr um ${pz(p.sparDynamik)}`);
       an.push('. ');
     }
     if (a.sparJahre > 0) {
@@ -414,6 +417,50 @@
         }
       }
       box.appendChild(el);
+    }
+
+    // Plausibilitätshinweise ausführlich erklären
+    if (plausi.length) {
+      const block = document.createElement('div');
+      block.className = 'plausi-block' + (plausi.some((h) => h.stufe === 'warnung') ? ' warnung' : '');
+      const intro = document.createElement('p');
+      intro.className = 'plausi-intro';
+      intro.textContent = plausi.length === 1
+        ? 'Eine deiner Angaben ist ungewöhnlich – nimm das Ergebnis deshalb mit Vorsicht:'
+        : 'Einige deiner Angaben sind ungewöhnlich – nimm das Ergebnis deshalb mit Vorsicht:';
+      block.appendChild(intro);
+      for (const h of plausi) {
+        const el = document.createElement('p');
+        el.className = `plausi-punkt ${h.stufe}`;
+        const s = document.createElement('strong');
+        s.textContent = `${h.titel}. `;
+        el.append(s, document.createTextNode(h.text));
+        block.appendChild(el);
+      }
+      box.appendChild(block);
+    }
+  }
+
+  // ---------- Plausibilitätshinweise an den Eingabefeldern ----------
+  // Pro Feld zählt der schwerste Hinweis; sein Kurztext steht direkt unter dem Feld.
+  function zeigeHinweiseAnFeldern(plausi) {
+    for (const box of $$('.phase .feld')) {
+      box.classList.remove('plausi-hinweis', 'plausi-warnung');
+      $(':scope > .plausi-text', box)?.remove();
+    }
+    const proFeld = new Map();
+    for (const h of plausi) {
+      const alt = proFeld.get(h.feld);
+      if (!alt || (alt.stufe === 'hinweis' && h.stufe === 'warnung')) proFeld.set(h.feld, h);
+    }
+    for (const [feld, h] of proFeld) {
+      const box = $(`.phase .feld[data-feld="${feld}"]`);
+      if (!box) continue;
+      box.classList.add(`plausi-${h.stufe}`);
+      const t = document.createElement('small');
+      t.className = 'plausi-text';
+      t.textContent = h.kurz;
+      box.appendChild(t);
     }
   }
 

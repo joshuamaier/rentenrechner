@@ -25,11 +25,11 @@ npm test    # Tests des Rechenkerns (Node ≥ 18)
 Alle Stile hängen an der Wurzelklasse `.rr`, der Rechner lässt sich deshalb ohne Konflikte in eine
 bestehende Seite einsetzen:
 
-1. `css/rentenrechner.css` und die drei Dateien aus `js/` kopieren.
+1. `css/rentenrechner.css` und die vier Dateien aus `js/` kopieren.
 2. Den Inhalt von `<main class="seite rr">` aus `index.html` in ein Element mit der Klasse `rr`
    übernehmen (die IDs der Felder werden vom Skript gebraucht).
-3. `rentenrechner.css` einbinden und am Seitenende `rechner.js`, `diagramm.js` und `app.js` in dieser
-   Reihenfolge laden.
+3. `rentenrechner.css` einbinden und am Seitenende `rechner.js`, `diagramm.js`, `hinweise.js` und `app.js`
+   in dieser Reihenfolge laden.
 
 `css/seite.css` enthält nur Kopf und Fuß der eigenständigen Seite. Die Schrift ist Inter, falls die
 Seite sie mitbringt, sonst die Systemschrift. Die Eingaben werden erst nach der ersten Änderung in den
@@ -97,6 +97,24 @@ bewusst nicht an. Die Oberfläche spricht Nutzer mit „du“ an.
 | Benötigtes Anfangskapital | Wunschrente, übrige Werte | Anfangskapital |
 | Benötigter Zinssatz | Wunschrente, übrige Werte | Zinssatz der Ansparphase |
 
+### Plausibilitätshinweise
+
+Eingaben, die rechnerisch möglich, für eine realistische Planung aber fragwürdig sind, werden am Feld
+farbig markiert (gelb = ungewöhnlich, rot = unrealistisch/kritisch) und mit einem Kurztext versehen. Im
+Ergebnistext steht zusätzlich eine ausführliche Erklärung, warum die Annahme problematisch ist. Geprüft
+werden auch berechnete Zielgrößen (z. B. ein benötigter Zinssatz von 14 %). Die Grenzwerte stehen
+zentral in `GRENZEN` in `js/hinweise.js`:
+
+| Feld | Gelb | Rot |
+|---|---|---|
+| Zinssatz Ansparphase | über 7 % oder unter 1 %; über 5 % bei weniger als 10 Jahren Anlagedauer | über 13 % |
+| Dynamik Sparbeitrag | über 5 % | über 15 % |
+| Auszahlung ab Alter | unter 60 | – |
+| Zinssatz Auszahlphase | über 4 %, oder höher als in der Ansparphase | über 6 % |
+| Teilauszahlung | mehr als 50 % des Kapitals | – |
+| Ende der Rente (Kapitalverzehr/Reichweite) | vor 90 | vor 85 (Lebenserwartung) |
+| Dynamik der Rente | über 3 %; 0 % bei 20 Jahren und mehr (Kaufkraftverlust) | über 6 % |
+
 ### Rechenmodell
 
 - Simulation in **Monatsschritten** mit dem **konformen Monatszins** `iₘ = (1 + p)^(1/12) − 1`;
@@ -123,8 +141,10 @@ bewusst nicht an. Die Oberfläche spricht Nutzer mit „du“ an.
 | `css/seite.css` | Kopf und Fuß der eigenständigen Seite |
 | `js/rechner.js` | Rechenkern (ohne DOM, in Browser und Node nutzbar) |
 | `js/diagramm.js` | SVG-Grafik mit Tooltip |
+| `js/hinweise.js` | Plausibilitätshinweise mit Grenzwerten (ohne DOM, in Browser und Node nutzbar) |
 | `js/app.js` | Formular, Ergebnisse, Tabelle, CSV-Export, Link-Teilen (Werte im URL-Hash) |
 | `tests/rechner.test.js` | Tests gegen Barwert-/Endwertformeln und Hin-/Rückrechnung |
+| `tests/hinweise.test.js` | Tests der Plausibilitätshinweise |
 
 ## Lizenz
 
