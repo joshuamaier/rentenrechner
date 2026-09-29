@@ -1,9 +1,16 @@
 # Rentenrechner
 
+[![Tests](https://github.com/joshuamaier/rentenrechner/actions/workflows/test.yml/badge.svg)](https://github.com/joshuamaier/rentenrechner/actions/workflows/test.yml)
+[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-b8944a.svg)](LICENSE)
+
 Web-Rechner für die private Altersvorsorge: links die **Ansparphase**, rechts die **Auszahlphase** –
 mit Schnellergebnissen, einer Grafik des Kapitalverlaufs und einer Tabelle mit den Werten pro Jahr.
 Es kann **vorwärts** (aus dem Sparplan die Rente) und **rückwärts** (aus der Wunschrente den nötigen
 Sparplan) gerechnet werden.
+
+**Live ausprobieren:** [joshuamaier.de/blog/rentenrechner.html](https://joshuamaier.de/blog/rentenrechner.html)
+
+![Rentenrechner mit Anspar- und Auszahlphase](docs/screenshot.png)
 
 Reine statische Seite ohne Build-Schritt und ohne externe Abhängigkeiten – `index.html` im Browser
 öffnen oder beliebig hosten.
@@ -13,6 +20,22 @@ npm start   # lokaler Server auf http://localhost:8080
 npm test    # Tests des Rechenkerns (Node ≥ 18)
 ```
 
+## In eine andere Seite einbetten
+
+Alle Stile hängen an der Wurzelklasse `.rr`, der Rechner lässt sich deshalb ohne Konflikte in eine
+bestehende Seite einsetzen:
+
+1. `css/rentenrechner.css` und die drei Dateien aus `js/` kopieren.
+2. Den Inhalt von `<main class="seite rr">` aus `index.html` in ein Element mit der Klasse `rr`
+   übernehmen (die IDs der Felder werden vom Skript gebraucht).
+3. `rentenrechner.css` einbinden und am Seitenende `rechner.js`, `diagramm.js` und `app.js` in dieser
+   Reihenfolge laden.
+
+`css/seite.css` enthält nur Kopf und Fuß der eigenständigen Seite. Die Schrift ist Inter, falls die
+Seite sie mitbringt, sonst die Systemschrift. Die Eingaben werden erst nach der ersten Änderung in den
+URL-Hash geschrieben (für „Link kopieren“), die Adresse der umgebenden Seite bleibt beim Laden also
+unverändert.
+
 ## Konzept
 
 ### Aufbau der Seite
@@ -20,15 +43,15 @@ npm test    # Tests des Rechenkerns (Node ≥ 18)
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │ Was möchten Sie berechnen?                                   │
-│ Vorwärts:  [Mögliche Rente] [Reichweite des Kapitals]        │
+│ Vorwärts:  [Rente] [Reichweite des Kapitals]                 │
 │ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]         │
 │ Zahlungen vor-/nachschüssig · Startjahr · Link · Reset       │
 ├───────────────────────────┬──────────────────────────────────┤
-│ 1 Ansparphase   [Kapital] │ 2 Auszahlphase           [Rente] │
+│ 1 Ansparphase   [Kapital] │ 2 Auszahlphase   [Rente/Alter]   │
 │  Alter heute / Sparen bis │  Auszahlung ab Alter / Zinssatz  │
-│  Anfangskapital           │  Einmalige Teilauszahlung        │
-│  Sparbeitrag + Rhythmus   │  Kapitalverzehr | Ewige Rente    │
-│  Zinssatz / Dynamik       │  Dauer / Restkapital             │
+│  Anfangskapital           │  Teilauszahlung / Restkapital    │
+│  Sparbeitrag + Rhythmus   │  Art: Kapitalverzehr | Ewig      │
+│  Zinssatz / Dynamik       │  Dauer der Auszahlung            │
 │                           │  Rente + Rhythmus / Dynamik      │
 ├───────────────────────────┴──────────────────────────────────┤
 │ Ergebnis als Fließtext + Kacheln (Zielgröße hervorgehoben)   │
@@ -39,13 +62,16 @@ npm test    # Tests des Rechenkerns (Node ≥ 18)
 └──────────────────────────────────────────────────────────────┘
 ```
 
-Die Kopfzeilen der beiden Phasen zeigen die Hauptergebnisse: das angesparte Kapital und die Rente.
-Darunter fasst ein Fließtext das Ergebnis in ganzen Sätzen zusammen, gefolgt von den Kennzahl-Kacheln.
+Die Kopfzeilen der beiden Phasen zeigen die Hauptergebnisse: das angesparte Kapital und die Rente –
+bzw. beim Ziel „Reichweite“ das Alter, bis zu dem die Rente reicht. Darunter wiederholt ein Fließtext
+die Eingaben und beschreibt das Ergebnis in Alltagssprache ohne Fachbegriffe, gefolgt von den
+Kennzahl-Kacheln. Ist ein Feld ausgeblendet (z. B. Restkapital bei der ewigen Rente), nimmt das
+Nachbarfeld die volle Zeilenbreite ein.
 Voreingestellt ist eine **ewige Rente** (nur Zinsen werden ausgezahlt).
 
 Das jeweils berechnete Feld wird direkt im Formular als **„berechnet“** markiert (gestrichelter Rahmen)
 und ist schreibgeschützt. Beim Wechsel des Rechenziels wird das bisherige Ergebnis zur neuen Eingabe –
-wer also zuerst die mögliche Rente berechnet und dann auf „Benötigter Sparbeitrag“ klickt, erhält
+wer also zuerst die Rente berechnet und dann auf „Benötigter Sparbeitrag“ klickt, erhält
 wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
 
 ### Eingaben
@@ -53,9 +79,9 @@ wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
 | Ansparphase | Auszahlphase |
 |---|---|
 | Alter heute, Sparen bis Alter | Auszahlung ab Alter (≥ Sparende; dazwischen Ruhephase) |
-| Anfangskapital | Einmalige Teilauszahlung zu Beginn |
+| Anfangskapital | Einmalige Teilauszahlung zu Beginn, Restkapital am Ende |
 | Sparbeitrag, monatlich / vierteljährlich / jährlich | Zinssatz der Auszahlphase |
-| Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer + Restkapital) oder **ewige Rente** |
+| Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer) oder **ewige Rente** |
 | Zinssatz der Ansparphase | Rente, monatlich / vierteljährlich / jährlich, Dynamik (% p.a.) |
 
 Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende), Startjahr.
@@ -64,7 +90,7 @@ Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende
 
 | Ziel | Gegeben | Berechnet |
 |---|---|---|
-| Mögliche Rente | Sparplan, Dauer bzw. ewige Rente | Rente |
+| Rente | Sparplan, Dauer bzw. ewige Rente | Rente |
 | Reichweite des Kapitals | Sparplan, Rente | Wie lange das Kapital reicht (oder „unbegrenzt“) |
 | Benötigter Sparbeitrag | Wunschrente, übrige Werte | Sparbeitrag |
 | Benötigtes Anfangskapital | Wunschrente, übrige Werte | Anfangskapital |
@@ -92,8 +118,13 @@ Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende
 | Datei | Inhalt |
 |---|---|
 | `index.html` | Seitenstruktur |
-| `css/style.css` | Gestaltung inkl. Dark Mode und Mobilansicht |
+| `css/rentenrechner.css` | Gestaltung des Rechners inkl. Mobilansicht, alles unter `.rr` |
+| `css/seite.css` | Kopf und Fuß der eigenständigen Seite |
 | `js/rechner.js` | Rechenkern (ohne DOM, in Browser und Node nutzbar) |
 | `js/diagramm.js` | SVG-Grafik mit Tooltip |
 | `js/app.js` | Formular, Ergebnisse, Tabelle, CSV-Export, Link-Teilen (Werte im URL-Hash) |
 | `tests/rechner.test.js` | Tests gegen Barwert-/Endwertformeln und Hin-/Rückrechnung |
+
+## Lizenz
+
+[MIT](LICENSE) © Joshua Maier. Modellrechnung ohne Gewähr, keine Anlageberatung.

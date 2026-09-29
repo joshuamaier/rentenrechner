@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rentenrechner</title>
   <meta name="description" content="Rentenrechner mit Anspar- und Auszahlphase: Kapitalaufbau, Teilauszahlung, befristete oder ewige Rente – vorwärts und rückwärts gerechnet.">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/seite.css">
+  <link rel="stylesheet" href="css/rentenrechner.css">
 </head>
 <body>
   <header class="kopf">
     <div class="kopf-inhalt">
+      <p class="kopf-kicker">Altersvorsorge · Rechner</p>
       <h1>Rentenrechner</h1>
-      <p>Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
+      <p class="kopf-lead">Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
     </div>
   </header>
 
-  <main class="seite">
+  <main class="seite rr">
     <!-- Berechnungsziel -->
     <section class="karte ziel-karte" aria-labelledby="ziel-titel">
       <h2 id="ziel-titel" class="sr-only">Berechnungsziel</h2>
@@ -25,7 +27,7 @@
           <div class="ziel-gruppe">
             <span class="ziel-gruppe-titel">Vorwärts</span>
             <div class="segmente">
-              <label><input type="radio" name="ziel" value="rente" checked><span>Mögliche Rente</span></label>
+              <label><input type="radio" name="ziel" value="rente" checked><span>Rente</span></label>
               <label><input type="radio" name="ziel" value="reichweite"><span>Reichweite des Kapitals</span></label>
             </div>
           </div>
@@ -143,25 +145,11 @@
             </div>
           </div>
 
-          <div class="feld" data-feld="teilauszahlung">
-            <label for="f-teilauszahlung">Einmalige Teilauszahlung zu Beginn</label>
-            <div class="eingabe"><input id="f-teilauszahlung" data-typ="euro" inputmode="decimal"><span class="einheit">€</span></div>
-            <small class="hilfe" data-hilfe="teilauszahlung"></small>
-          </div>
-
-          <fieldset class="feld feld-modus" data-feld="entnahmeModus">
-            <legend>Art der Rente</legend>
-            <div class="segmente segmente-klein">
-              <label><input type="radio" name="entnahmeModus" value="dauer" checked><span>Kapitalverzehr</span></label>
-              <label><input type="radio" name="entnahmeModus" value="ewig"><span>Ewige Rente (nur Zinsen)</span></label>
-            </div>
-          </fieldset>
-
           <div class="feld-reihe">
-            <div class="feld" data-feld="entnahmeDauer">
-              <label for="f-entnahmeDauer">Dauer der Auszahlung</label>
-              <div class="eingabe"><input id="f-entnahmeDauer" data-typ="jahre" inputmode="numeric"><span class="einheit">Jahre</span></div>
-              <small class="hilfe" data-hilfe="entnahmeDauer"></small>
+            <div class="feld" data-feld="teilauszahlung">
+              <label for="f-teilauszahlung">Teilauszahlung zu Beginn</label>
+              <div class="eingabe"><input id="f-teilauszahlung" data-typ="euro" inputmode="decimal"><span class="einheit">€</span></div>
+              <small class="hilfe" data-hilfe="teilauszahlung"></small>
             </div>
             <div class="feld" data-feld="restkapital">
               <label for="f-restkapital">Restkapital am Ende</label>
@@ -169,23 +157,38 @@
             </div>
           </div>
 
-          <div class="feld" data-feld="rente">
-            <label for="f-rente">Rente</label>
-            <div class="eingabe">
-              <input id="f-rente" data-typ="euro" inputmode="decimal"><span class="einheit">€</span>
-              <select id="f-rentenIntervall" aria-label="Rhythmus der Rente">
-                <option value="12">monatlich</option>
-                <option value="4">vierteljährlich</option>
-                <option value="1">jährlich</option>
-              </select>
+          <div class="feld feld-modus" data-feld="entnahmeModus" role="radiogroup" aria-labelledby="modus-titel">
+            <span id="modus-titel" class="feld-titel">Art der Rente</span>
+            <div class="segmente segmente-klein">
+              <label><input type="radio" name="entnahmeModus" value="dauer"><span>Kapitalverzehr</span></label>
+              <label><input type="radio" name="entnahmeModus" value="ewig" checked><span>Ewige Rente (nur Zinsen)</span></label>
             </div>
-            <small class="hilfe" data-hilfe="rente"></small>
           </div>
 
-          <div class="feld" data-feld="rentenDynamik">
-            <label for="f-rentenDynamik">Dynamik der Rente</label>
-            <div class="eingabe"><input id="f-rentenDynamik" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
-            <small class="hilfe">Jährliche Steigerung, z. B. als Inflationsausgleich</small>
+          <div class="feld" data-feld="entnahmeDauer">
+            <label for="f-entnahmeDauer">Dauer der Auszahlung</label>
+            <div class="eingabe"><input id="f-entnahmeDauer" data-typ="jahre" inputmode="numeric"><span class="einheit">Jahre</span></div>
+            <small class="hilfe" data-hilfe="entnahmeDauer"></small>
+          </div>
+
+          <div class="feld-reihe feld-reihe-rente">
+            <div class="feld" data-feld="rente">
+              <label for="f-rente">Rente</label>
+              <div class="eingabe">
+                <input id="f-rente" data-typ="euro" inputmode="decimal"><span class="einheit">€</span>
+                <select id="f-rentenIntervall" aria-label="Rhythmus der Rente">
+                  <option value="12">monatlich</option>
+                  <option value="4">vierteljährlich</option>
+                  <option value="1">jährlich</option>
+                </select>
+              </div>
+              <small class="hilfe" data-hilfe="rente"></small>
+            </div>
+            <div class="feld" data-feld="rentenDynamik">
+              <label for="f-rentenDynamik">Dynamik der Rente</label>
+              <div class="eingabe"><input id="f-rentenDynamik" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
+              <small class="hilfe">Jährliche Steigerung, z. B. als Inflationsausgleich</small>
+            </div>
           </div>
         </div>
       </section>
@@ -227,6 +230,10 @@
       effektiven Jahresrendite). Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten und Inflation
       (Rentendynamik kann als Inflationsausgleich genutzt werden). In einer Ruhephase zwischen Sparende und
       Auszahlbeginn wird das Kapital mit dem Zinssatz der Ansparphase verzinst.
+    </p>
+    <p>
+      Ein Projekt von <a href="https://joshuamaier.de">Joshua Maier</a> ·
+      <a href="https://github.com/joshuamaier/rentenrechner">Quellcode auf GitHub</a> (MIT-Lizenz)
     </p>
   </footer>
 
