@@ -42,9 +42,9 @@ test('Rendite im Ruhestand: eher hoch ab 4 %, kritisch ab 6 %, Hinweis wenn höh
 
 test('Ende der Rente vor der Lebenserwartung', () => {
   const dauer = (n) => zu(pruefe({ entnahmeModus: 'dauer', rentenDynamik: 0.02, entnahmeDauer: n }), 'entnahmeDauer');
-  assert.equal(dauer(15)[0].stufe, 'warnung');   // bis 82
-  assert.equal(dauer(20)[0].stufe, 'hinweis');   // bis 87
-  assert.deepEqual(dauer(23), []);               // bis 90
+  assert.equal(dauer(15)[0].stufe, 'warnung'); // bis 82
+  assert.equal(dauer(20)[0].stufe, 'hinweis'); // bis 87
+  assert.deepEqual(dauer(23), []); // bis 90
   // Reichweite: 3.000 € monatlich reichen nur rund 13 Jahre
   const r = zu(pruefe({ rente: 3000 }, 'reichweite'), 'entnahmeDauer');
   assert.equal(r[0].stufe, 'warnung');

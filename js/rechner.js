@@ -97,8 +97,18 @@
     const p = Object.assign({}, STANDARD, eingabe || {});
     const ganz = ['startJahr', 'alterHeute', 'sparEndeAlter', 'auszahlBeginnAlter', 'sparIntervall', 'rentenIntervall'];
     for (const k of ganz) p[k] = Math.round(Number(p[k]));
-    const zahl = ['anfangskapital', 'sparrate', 'sparDynamik', 'zinsAnspar', 'teilauszahlung',
-      'zinsEntnahme', 'rente', 'rentenDynamik', 'entnahmeDauer', 'restkapital'];
+    const zahl = [
+      'anfangskapital',
+      'sparrate',
+      'sparDynamik',
+      'zinsAnspar',
+      'teilauszahlung',
+      'zinsEntnahme',
+      'rente',
+      'rentenDynamik',
+      'entnahmeDauer',
+      'restkapital',
+    ];
     for (const k of zahl) p[k] = Number(p[k]);
     p.vorschuessig = p.vorschuessig !== false && p.vorschuessig !== 'false';
     return p;
@@ -116,7 +126,8 @@
     if (p.alterHeute < 0 || p.alterHeute > 100) return 'Das Alter heute muss zwischen 0 und 100 liegen.';
     if (p.sparEndeAlter < p.alterHeute) return 'Das Sparende darf nicht vor dem heutigen Alter liegen.';
     if (p.auszahlBeginnAlter < p.sparEndeAlter) return 'Die Auszahlung kann erst nach dem Sparende beginnen.';
-    if (p.auszahlBeginnAlter - p.alterHeute > 100) return 'Der Zeitraum bis zur Auszahlung ist zu lang (max. 100 Jahre).';
+    if (p.auszahlBeginnAlter - p.alterHeute > 100)
+      return 'Der Zeitraum bis zur Auszahlung ist zu lang (max. 100 Jahre).';
     for (const k of ['zinsAnspar', 'zinsEntnahme', 'sparDynamik', 'rentenDynamik']) {
       if (k !== feld && p[k] <= -0.5) return 'Zinssätze und Dynamiken müssen größer als −50 % sein.';
     }
@@ -126,8 +137,10 @@
     if (p.restkapital < 0) return 'Das Restkapital darf nicht negativ sein.';
     if (feld !== 'rente' && p.rente < 0) return 'Die Rente darf nicht negativ sein.';
     if (ziel !== 'reichweite' && p.entnahmeModus === 'dauer') {
-      if (!(p.entnahmeDauer > 0) || p.entnahmeDauer > 100) return 'Die Auszahldauer muss zwischen 1 und 100 Jahren liegen.';
-      if (Math.round(p.entnahmeDauer) !== p.entnahmeDauer) return 'Die Auszahldauer muss in ganzen Jahren angegeben werden.';
+      if (!(p.entnahmeDauer > 0) || p.entnahmeDauer > 100)
+        return 'Die Auszahldauer muss zwischen 1 und 100 Jahren liegen.';
+      if (Math.round(p.entnahmeDauer) !== p.entnahmeDauer)
+        return 'Die Auszahldauer muss in ganzen Jahren angegeben werden.';
     }
     return null;
   }
@@ -151,11 +164,17 @@
       let z = 0;
       for (let m = 0; m < 12; m++) {
         const zahlt = spart && istZahlmonat(m, p.sparIntervall, p.vorschuessig);
-        if (zahlt && p.vorschuessig) { K += rate; e += rate; }
+        if (zahlt && p.vorschuessig) {
+          K += rate;
+          e += rate;
+        }
         const zm = K * im;
         K += zm;
         z += zm;
-        if (zahlt && !p.vorschuessig) { K += rate; e += rate; }
+        if (zahlt && !p.vorschuessig) {
+          K += rate;
+          e += rate;
+        }
       }
       einzahlungen += e;
       zinsen += z;
@@ -296,14 +315,21 @@
 
       if (ziel === 'sparrate' || ziel === 'anfangskapital') {
         if (ziel === 'sparrate' && p.sparEndeAlter === p.alterHeute) {
-          return { ziel, params: p, fehler: 'Ohne Ansparzeit (Sparende = Alter heute) lässt sich keine Sparrate berechnen.' };
+          return {
+            ziel,
+            params: p,
+            fehler: 'Ohne Ansparzeit (Sparende = Alter heute) lässt sich keine Sparrate berechnen.',
+          };
         }
         let x = loeseLinear(kapitalMit(ziel), bedarf);
-        if (!Number.isFinite(x)) return { ziel, params: p, fehler: 'Die Zielgröße lässt sich mit diesen Eingaben nicht berechnen.' };
+        if (!Number.isFinite(x))
+          return { ziel, params: p, fehler: 'Die Zielgröße lässt sich mit diesen Eingaben nicht berechnen.' };
         if (x < 0) {
-          hinweise.push(ziel === 'sparrate'
-            ? 'Das Ziel wird bereits ohne Sparbeitrag erreicht – der Sparbeitrag wurde auf 0 gesetzt.'
-            : 'Das Ziel wird bereits ohne Anfangskapital erreicht – das Anfangskapital wurde auf 0 gesetzt.');
+          hinweise.push(
+            ziel === 'sparrate'
+              ? 'Das Ziel wird bereits ohne Sparbeitrag erreicht – der Sparbeitrag wurde auf 0 gesetzt.'
+              : 'Das Ziel wird bereits ohne Anfangskapital erreicht – das Anfangskapital wurde auf 0 gesetzt.',
+          );
           x = 0;
         }
         p[ziel] = x;
@@ -331,7 +357,9 @@
 
     if (p.teilauszahlung > kapitalStart + EPS) {
       return {
-        ziel, params: p, anspar,
+        ziel,
+        params: p,
+        anspar,
         fehler: 'Die Teilauszahlung ist höher als das Kapital zu Beginn der Auszahlphase.',
       };
     }
@@ -346,7 +374,12 @@
         const end = (R) => simuliereEntnahme(p, kapitalStart, R, { jahre: p.entnahmeDauer }).kapitalEnde;
         const R = loeseLinear(end, p.restkapital);
         if (!(R >= 0)) {
-          return { ziel, params: p, anspar, fehler: 'Das gewünschte Restkapital ist höher als das verfügbare Kapital.' };
+          return {
+            ziel,
+            params: p,
+            anspar,
+            fehler: 'Das gewünschte Restkapital ist höher als das verfügbare Kapital.',
+          };
         }
         p.rente = R;
       }
@@ -360,12 +393,18 @@
       } else {
         reichweiteJahre = Infinity;
         p.entnahmeDauer = Infinity;
-        hinweise.push(`Das Kapital reicht länger als ${MAX_JAHRE_REICHWEITE} Jahre – die Rente wird praktisch dauerhaft aus den Erträgen bezahlt.`);
+        hinweise.push(
+          `Das Kapital reicht länger als ${MAX_JAHRE_REICHWEITE} Jahre – die Rente wird praktisch dauerhaft aus den Erträgen bezahlt.`,
+        );
         entnahme = simuliereEntnahme(p, kapitalStart, p.rente, { jahre: anzeigeJahreEwig(p), bisLeer: true });
       }
     } else if (p.entnahmeModus === 'ewig') {
       reichweiteJahre = Infinity;
-      entnahme = simuliereEntnahme(p, kapitalStart, p.rente, { jahre: anzeigeJahreEwig(p), bisLeer: true, ohneDynamik: true });
+      entnahme = simuliereEntnahme(p, kapitalStart, p.rente, {
+        jahre: anzeigeJahreEwig(p),
+        bisLeer: true,
+        ohneDynamik: true,
+      });
     } else {
       reichweiteJahre = p.entnahmeDauer;
       entnahme = simuliereEntnahme(p, kapitalStart, p.rente, { jahre: p.entnahmeDauer, bisLeer: true });
@@ -378,10 +417,14 @@
 
     // 4) Jahrestabelle zusammensetzen
     const offset = anspar.rows.length;
-    const rows = anspar.rows.concat(entnahme.rows.map((r, j) => Object.assign(r, {
-      index: offset + j,
-      jahr: p.startJahr + offset + j,
-    })));
+    const rows = anspar.rows.concat(
+      entnahme.rows.map((r, j) =>
+        Object.assign(r, {
+          index: offset + j,
+          jahr: p.startJahr + offset + j,
+        }),
+      ),
+    );
 
     return {
       ziel,
