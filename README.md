@@ -42,10 +42,9 @@ unverändert.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ Was möchten Sie berechnen?                                   │
+│ Was möchtest du berechnen?         Link kopieren · Reset     │
 │ Vorwärts:  [Rente] [Reichweite des Kapitals]                 │
-│ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]         │
-│ Zahlungen vor-/nachschüssig · Startjahr · Link · Reset       │
+│ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]  [Jahr] │
 ├───────────────────────────┬──────────────────────────────────┤
 │ 1 Ansparphase   [Kapital] │ 2 Auszahlphase   [Rente/Alter]   │
 │  Alter heute / Sparen bis │  Auszahlung ab Alter / Zinssatz  │
@@ -84,7 +83,9 @@ wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
 | Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer) oder **ewige Rente** |
 | Zinssatz der Ansparphase | Rente, monatlich / vierteljährlich / jährlich, Dynamik (% p.a.) |
 
-Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende), Startjahr.
+Global: Startjahr (in der Zeile der Rechenziele). Alle Zahlungen sind **nachschüssig**, fallen also am Ende
+der Periode an; der Rechenkern unterstützt auch vorschüssig (`vorschuessig: true`), die Oberfläche bietet das
+bewusst nicht an. Die Oberfläche spricht Nutzer mit „du“ an.
 
 ### Rechenziele
 
@@ -106,7 +107,7 @@ Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende
 - **Kapitalverzehr:** Die Rente wird so bestimmt, dass nach der Auszahldauer genau das gewünschte
   Restkapital übrig bleibt (bei Rentendynamik steigt die Rate jährlich).
 - **Ewige Rente:** Es wird nur der Zinsertrag ausgezahlt, das Kapital bleibt konstant:
-  `R = K · iₚ` (nachschüssig) bzw. `R = K · iₚ / (1 + iₚ)` (vorschüssig) mit dem Periodenzins `iₚ`.
+  `R = K · iₚ` (nachschüssig, Standard) bzw. `R = K · iₚ / (1 + iₚ)` (vorschüssig) mit dem Periodenzins `iₚ`.
 - **Rückwärtsrechnung:** Zuerst wird der Kapitalbedarf zu Auszahlbeginn ermittelt (Barwert der
   Renten + Teilauszahlung + abgezinstes Restkapital). Sparbeitrag und Anfangskapital gehen linear ein
   und werden exakt gelöst, der Zinssatz per Bisektion.

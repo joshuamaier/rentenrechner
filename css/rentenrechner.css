@@ -77,9 +77,12 @@
 .rr .ergebnis-text.veraltet { opacity: 0.45; }
 
 /* ---------- Berechnungsziel ---------- */
-.rr .ziel-auswahl { border: 0; margin: 0; padding: 0; min-width: 0; }
-.rr .ziel-auswahl > legend { font-weight: 600; font-size: 18px; letter-spacing: -0.2px; margin-bottom: 14px; padding: 0; }
-.rr .ziel-gruppen { display: flex; flex-wrap: wrap; gap: 16px 28px; }
+.rr .ziel-kopf {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 8px 16px; margin-bottom: 14px;
+}
+.rr .ziel-kopf h2 { font-weight: 600; font-size: 18px; letter-spacing: -0.2px; }
+.rr .ziel-gruppen { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 28px; }
 .rr .ziel-gruppe { display: grid; gap: 8px; min-width: 0; }
 .rr .ziel-gruppe-titel {
   font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
@@ -103,18 +106,24 @@
 .rr .segmente input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
 .rr .segmente-klein span { padding: 5px 12px; font-size: 13.5px; }
 
-.rr .optionen {
-  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px;
-  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border);
+/* Startjahr in der Reihe der Rechenziele, gleich hoch wie die Segmente */
+.rr .option-startjahr { margin-left: auto; }
+.rr .option-startjahr input {
+  height: 43px; width: 90px; border: 1px solid var(--border-strong); border-radius: var(--radius-s);
+  background: var(--surface); padding: 0 10px; color: var(--text); text-align: right;
 }
-.rr .option { display: grid; gap: 4px; font-size: 13px; color: var(--text-2); }
-.rr .option select, .rr .option input {
-  height: 38px; border: 1px solid var(--border-strong); border-radius: var(--radius-s);
-  background: var(--surface); padding: 0 10px; color: var(--text);
+.rr .option-startjahr input:focus-visible { outline: none; border-color: var(--text); }
+.rr .option.ungueltig input { border-color: var(--error-border); }
+
+/* Link kopieren / Zurücksetzen: dezent oben rechts */
+.rr .option-knoepfe { display: flex; gap: 18px; margin-left: auto; }
+.rr .knopf-dezent {
+  padding: 2px 0; border: 0; background: none; cursor: pointer;
+  color: var(--text-2); font-size: 13px; font-weight: 500;
+  border-bottom: 1px solid transparent; transition: color 0.2s ease, border-color 0.2s ease;
 }
-.rr .option select:focus-visible, .rr .option input:focus-visible { outline: none; border-color: var(--text); }
-.rr .option input.kurz { width: 90px; }
-.rr .option-knoepfe { display: flex; gap: 8px; margin-left: auto; }
+.rr .knopf-dezent:hover { color: var(--text); border-bottom-color: var(--gold); }
+.rr .knopf-dezent:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 .rr .knopf-sekundaer {
   height: 38px; padding: 0 16px; border-radius: 3px;
@@ -284,7 +293,7 @@
   .rr .phasen { grid-template-columns: minmax(0, 1fr); }
   .rr .phasen-pfeil { justify-content: center; transform: rotate(90deg); }
   .rr .phase-kopf { flex-wrap: wrap; }
-  .rr .option-knoepfe { margin-left: 0; }
+  .rr .option-startjahr { margin-left: 0; }
 }
 @media (max-width: 520px) {
   .rr .karte { padding: 18px 16px; }

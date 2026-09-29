@@ -4,59 +4,49 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rentenrechner</title>
-  <meta name="description" content="Rentenrechner mit Anspar- und Auszahlphase: Kapitalaufbau, Teilauszahlung, befristete oder ewige Rente – vorwärts und rückwärts gerechnet.">
+  <meta name="description" content="Einfacher, kostenloser Rentenrechner: Plane deine Altersvorsorge grob – wie viel Rente bringt dein Sparplan, und wie viel musst du für deine Wunschrente sparen?">
   <link rel="stylesheet" href="css/seite.css">
   <link rel="stylesheet" href="css/rentenrechner.css">
 </head>
 <body>
   <header class="kopf">
     <div class="kopf-inhalt">
-      <p class="kopf-kicker">Altersvorsorge · Rechner</p>
+      <p class="kopf-kicker">Kostenloser Rechner</p>
       <h1>Rentenrechner</h1>
-      <p class="kopf-lead">Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
+      <p class="kopf-lead">Plane deine Altersvorsorge grob: Wie viel Rente bringt dein Sparplan – und wie viel musst du für deine Wunschrente sparen?</p>
     </div>
   </header>
 
   <main class="seite rr">
     <!-- Berechnungsziel -->
     <section class="karte ziel-karte" aria-labelledby="ziel-titel">
-      <h2 id="ziel-titel" class="sr-only">Berechnungsziel</h2>
-      <fieldset class="ziel-auswahl">
-        <legend>Was möchten Sie berechnen?</legend>
-        <div class="ziel-gruppen">
-          <div class="ziel-gruppe">
-            <span class="ziel-gruppe-titel">Vorwärts</span>
-            <div class="segmente">
-              <label><input type="radio" name="ziel" value="rente" checked><span>Rente</span></label>
-              <label><input type="radio" name="ziel" value="reichweite"><span>Reichweite des Kapitals</span></label>
-            </div>
-          </div>
-          <div class="ziel-gruppe">
-            <span class="ziel-gruppe-titel">Rückwärts (aus Wunschrente)</span>
-            <div class="segmente">
-              <label><input type="radio" name="ziel" value="sparrate"><span>Benötigter Sparbeitrag</span></label>
-              <label><input type="radio" name="ziel" value="anfangskapital"><span>Benötigtes Anfangskapital</span></label>
-              <label><input type="radio" name="ziel" value="zinsAnspar"><span>Benötigter Zinssatz</span></label>
-            </div>
+      <div class="ziel-kopf">
+        <h2 id="ziel-titel">Was möchtest du berechnen?</h2>
+        <div class="option-knoepfe">
+          <button type="button" class="knopf-dezent" id="btn-teilen">Link kopieren</button>
+          <button type="button" class="knopf-dezent" id="btn-reset">Zurücksetzen</button>
+        </div>
+      </div>
+      <div class="ziel-gruppen">
+        <div class="ziel-gruppe" role="radiogroup" aria-labelledby="ziel-vorwaerts">
+          <span class="ziel-gruppe-titel" id="ziel-vorwaerts">Vorwärts</span>
+          <div class="segmente">
+            <label><input type="radio" name="ziel" value="rente" checked><span>Rente</span></label>
+            <label><input type="radio" name="ziel" value="reichweite"><span>Reichweite des Kapitals</span></label>
           </div>
         </div>
-      </fieldset>
-      <div class="optionen">
-        <label class="option">
-          <span>Zahlungen</span>
-          <select id="f-vorschuessig">
-            <option value="true">zu Periodenbeginn (vorschüssig)</option>
-            <option value="false">zu Periodenende (nachschüssig)</option>
-          </select>
-        </label>
-        <label class="option">
-          <span>Startjahr</span>
+        <div class="ziel-gruppe" role="radiogroup" aria-labelledby="ziel-rueckwaerts">
+          <span class="ziel-gruppe-titel" id="ziel-rueckwaerts">Rückwärts (aus Wunschrente)</span>
+          <div class="segmente">
+            <label><input type="radio" name="ziel" value="sparrate"><span>Benötigter Sparbeitrag</span></label>
+            <label><input type="radio" name="ziel" value="anfangskapital"><span>Benötigtes Anfangskapital</span></label>
+            <label><input type="radio" name="ziel" value="zinsAnspar"><span>Benötigter Zinssatz</span></label>
+          </div>
+        </div>
+        <label class="ziel-gruppe option option-startjahr">
+          <span class="ziel-gruppe-titel">Startjahr</span>
           <input id="f-startJahr" data-feld="startJahr" data-typ="jahr" inputmode="numeric" class="kurz">
         </label>
-        <div class="option-knoepfe">
-          <button type="button" class="knopf-sekundaer" id="btn-teilen">Link kopieren</button>
-          <button type="button" class="knopf-sekundaer" id="btn-reset">Zurücksetzen</button>
-        </div>
       </div>
     </section>
 
@@ -227,7 +217,7 @@
   <footer class="fuss">
     <p>
       Modellrechnung ohne Gewähr. Verzinsung mit konformem Monatszins (der angegebene Zinssatz entspricht der
-      effektiven Jahresrendite). Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten und Inflation
+      effektiven Jahresrendite), Zahlungen jeweils am Ende der Periode (nachschüssig). Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten und Inflation
       (Rentendynamik kann als Inflationsausgleich genutzt werden). In einer Ruhephase zwischen Sparende und
       Auszahlbeginn wird das Kapital mit dem Zinssatz der Ansparphase verzinst.
     </p>

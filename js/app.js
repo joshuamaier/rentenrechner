@@ -26,6 +26,11 @@
     return (ganz ? f0 : f2).format(v);
   }
 
+  // Alter am Ende der Reichweite, passend zur Rundung von jahreText (auf ganze Monate)
+  function reichtBisAlter(p, e) {
+    return p.auszahlBeginnAlter + Math.floor(Math.round(e.reichweiteJahre * 12) / 12);
+  }
+
   function jahreText(y) {
     if (!Number.isFinite(y)) return 'unbegrenzt';
     let j = Math.floor(y + 1e-9);
@@ -59,11 +64,10 @@
     const werte = standard();
     let gefunden = q.has('ziel');
     for (const [k, v] of q) {
-      if (k === 'ziel') continue;
+      if (k === 'ziel' || k === 'vorschuessig') continue; // Zahlungsweise ist fest nachschüssig
       if (!(k in werte)) continue;
       gefunden = true;
       if (k === 'entnahmeModus') werte[k] = v === 'ewig' ? 'ewig' : 'dauer';
-      else if (k === 'vorschuessig') werte[k] = v !== 'false';
       else if (Number.isFinite(Number(v))) werte[k] = Number(v);
     }
     if (!gefunden) return false;
@@ -76,7 +80,7 @@
     q.set('ziel', zustand.ziel);
     const feld = R.ZIELE[zustand.ziel].feld;
     for (const [k, v] of Object.entries(zustand.werte)) {
-      if (k === feld) continue;
+      if (k === feld || k === 'vorschuessig') continue;
       q.set(k, typeof v === 'number' ? String(Math.round(v * 1e6) / 1e6) : String(v));
     }
     history.replaceState(null, '', `#${q.toString()}`);
@@ -107,7 +111,6 @@
     }
     $('#f-sparIntervall').value = String(zustand.werte.sparIntervall);
     $('#f-rentenIntervall').value = String(zustand.werte.rentenIntervall);
-    $('#f-vorschuessig').value = String(zustand.werte.vorschuessig);
     $(`input[name="ziel"][value="${zustand.ziel}"]`).checked = true;
     $(`input[name="entnahmeModus"][value="${zustand.werte.entnahmeModus}"]`).checked = true;
   }
@@ -279,7 +282,7 @@
     if (zustand.ziel === 'reichweite') {
       const endlich = Number.isFinite(e.reichweiteJahre);
       kennzahl($('#kennzahl-entnahme'), 'Rente reicht bis',
-        endlich ? `Alter ${f0.format(Math.floor(e.endeAlter + 1e-9))}` : 'unbegrenzt', '',
+        endlich ? `Alter ${f0.format(reichtBisAlter(p, e))}` : 'unbegrenzt', '',
         endlich ? `${jahreText(e.reichweiteJahre)} lang` : 'Kapital wird nicht aufgebraucht');
       return;
     }
@@ -312,82 +315,82 @@
     if (R.ZIELE[ziel].richtung === 'rueckwaerts') {
       const dauer = e.modus === 'ewig' ? 'dauerhaft' : `${jahre(p.entnahmeDauer)} lang`;
       const t = [
-        `Ihr Ziel: Ab ${p.auszahlBeginnAlter} Jahren möchten Sie ${dauer} `, B(renteText),
-        ' Rente bekommen. Dafür brauchen Sie zum Rentenbeginn ein Vermögen von ', B(euro(erg.kapitalBedarf)), '. ',
+        `Dein Ziel: Ab ${p.auszahlBeginnAlter} Jahren möchtest du ${dauer} `, B(renteText),
+        ' Rente bekommen. Dafür brauchst du zum Rentenbeginn ein Vermögen von ', B(euro(erg.kapitalBedarf)), '. ',
       ];
       const nichtNoetig = (erg.hinweise || []).length && erg.geloest.wert === 0;
       if (ziel === 'sparrate') {
         t.push(...(nichtNoetig
-          ? ['Das erreichen Sie schon ohne weitere Sparbeiträge – Ihr Startbetrag reicht bereits aus.']
-          : ['Das erreichen Sie, wenn Sie bis dahin ', B(sparText), ' zur Seite legen.']));
+          ? ['Das erreichst du schon ohne weitere Sparbeiträge – dein Startbetrag reicht bereits aus.']
+          : ['Das erreichst du, wenn du bis dahin ', B(sparText), ' zur Seite legst.']));
       } else if (ziel === 'anfangskapital') {
         t.push(...(nichtNoetig
-          ? ['Ein Startbetrag ist dafür nicht nötig – Ihre regelmäßigen Sparbeiträge reichen bereits aus.']
-          : ['Das erreichen Sie, wenn Sie heute einmalig ', B(euro(p.anfangskapital)), ' anlegen.']));
+          ? ['Ein Startbetrag ist dafür nicht nötig – deine regelmäßigen Sparbeiträge reichen bereits aus.']
+          : ['Das erreichst du, wenn du heute einmalig ', B(euro(p.anfangskapital)), ' anlegst.']));
       } else {
-        t.push('Das klappt, wenn sich Ihr Geld beim Sparen jedes Jahr um durchschnittlich ',
+        t.push('Das klappt, wenn sich dein Geld beim Sparen jedes Jahr um durchschnittlich ',
           B(`${nf(2, 2).format(p.zinsAnspar * 100)} %`), ' vermehrt.');
       }
       absaetze.push(t);
     }
 
     // Ansparphase
-    const an = [`Sie sind heute ${p.alterHeute} Jahre alt`];
-    if (p.anfangskapital > 0) an.push(' und haben bereits ', B(euro(p.anfangskapital)), ' angelegt');
+    const an = [`Du bist heute ${p.alterHeute} Jahre alt`];
+    if (p.anfangskapital > 0) an.push(' und hast bereits ', B(euro(p.anfangskapital)), ' angelegt');
     an.push('. ');
     if (a.sparJahre > 0 && p.sparrate > 0) {
-      an.push(`Bis Sie ${p.sparEndeAlter} sind, legen Sie `, B(sparText), ' zur Seite');
+      an.push(`Bis du ${p.sparEndeAlter} bist, legst du `, B(sparText), ' zur Seite');
       if (p.sparDynamik) an.push(` und erhöhen den Betrag jedes Jahr um ${pz(p.sparDynamik)}`);
       an.push('. ');
     }
     if (a.sparJahre > 0) {
       const ertraege = a.kapitalSparende - a.einzahlungen;
-      an.push(`Wenn Ihr Geld dabei im Schnitt ${pz(p.zinsAnspar)} pro Jahr Ertrag bringt, sind nach ${jahrenDativ(a.sparJahre)} `,
-        B(euro(a.kapitalSparende)), ' zusammengekommen. Davon haben Sie selbst ', B(euro(a.einzahlungen)), ' eingezahlt');
+      an.push(`Wenn dein Geld dabei im Schnitt ${pz(p.zinsAnspar)} pro Jahr Ertrag bringt, sind nach ${jahrenDativ(a.sparJahre)} `,
+        B(euro(a.kapitalSparende)), ' zusammengekommen. Davon hast du selbst ', B(euro(a.einzahlungen)), ' eingezahlt');
       if (ertraege >= 0.5) {
-        an.push(' – die übrigen ', B(euro(ertraege)), ' hat Ihr Geld durch Zinsen und Zinseszinsen für Sie erwirtschaftet. ');
+        an.push(' – die übrigen ', B(euro(ertraege)), ' hat dein Geld durch Zinsen und Zinseszinsen für dich erwirtschaftet. ');
       } else {
         an.push('. ');
       }
     }
     if (a.ruheJahre > 0) {
-      an.push(`Danach zahlen Sie nichts mehr ein, das Geld bleibt aber noch ${jahre(a.ruheJahre)} angelegt und wächst bis zum Rentenbeginn mit ${p.auszahlBeginnAlter} auf `,
+      an.push(`Danach zahlst du nichts mehr ein, das Geld bleibt aber noch ${jahre(a.ruheJahre)} angelegt und wächst bis zum Rentenbeginn mit ${p.auszahlBeginnAlter} auf `,
         B(euro(a.kapitalAuszahlbeginn)), '.');
     } else if (a.sparJahre === 0) {
-      an.push('Zum Rentenbeginn stehen Ihnen ', B(euro(a.kapitalAuszahlbeginn)), ' zur Verfügung.');
+      an.push('Zum Rentenbeginn stehen dir ', B(euro(a.kapitalAuszahlbeginn)), ' zur Verfügung.');
     }
     absaetze.push(an);
 
     // Auszahlphase
     const aus = [];
     if (p.teilauszahlung > 0) {
-      aus.push(`Zum Rentenbeginn mit ${p.auszahlBeginnAlter} lassen Sie sich einmalig `, B(euro(p.teilauszahlung)),
+      aus.push(`Zum Rentenbeginn mit ${p.auszahlBeginnAlter} lässt du dir einmalig `, B(euro(p.teilauszahlung)),
         ' auszahlen, zum Beispiel für eine größere Anschaffung. Übrig bleiben ', B(euro(e.kapitalNachTeilauszahlung)), '. ');
     }
     const start = p.teilauszahlung > 0 ? 'Aus diesem Betrag' : `Ab ${p.auszahlBeginnAlter}`;
     const renten = e.summeAuszahlungen - e.teilauszahlung;
     const gesamt = () => {
-      aus.push(' Insgesamt bekommen Sie so ', B(euro(renten)), ' ausgezahlt');
+      aus.push(' Insgesamt bekommst du so ', B(euro(renten)), ' ausgezahlt');
       if (e.zinsen >= 0.5) aus.push(` – ${euro(e.zinsen)} davon sind Erträge, die erst während der Rentenzeit dazukommen`);
       aus.push('.');
     };
     if (e.modus === 'ewig') {
-      aus.push(`${start} bekommen Sie `, B(renteText), ' Rente – und zwar ', B('für immer'),
-        `. Das funktioniert, weil Ihnen nur die Erträge ausgezahlt werden, die das Geld weiterhin abwirft (${pz(p.zinsEntnahme)} pro Jahr). Das Vermögen von `,
+      aus.push(`${start} bekommst du `, B(renteText), ' Rente – und zwar ', B('für immer'),
+        `. Das funktioniert, weil dir nur die Erträge ausgezahlt werden, die das Geld weiterhin abwirft (${pz(p.zinsEntnahme)} pro Jahr). Das Vermögen von `,
         B(euro(e.kapitalNachTeilauszahlung)), ' selbst wird nicht angetastet und kann später vererbt werden.');
     } else if (ziel === 'reichweite') {
-      aus.push(`Wenn Sie sich ${start === 'Aus diesem Betrag' ? 'daraus' : `ab ${p.auszahlBeginnAlter}`} `, B(renteText),
-        ` auszahlen lassen und das restliche Geld weiterhin ${pz(p.zinsEntnahme)} pro Jahr bringt, `);
+      aus.push(`Wenn du dir ${start === 'Aus diesem Betrag' ? 'daraus' : `ab ${p.auszahlBeginnAlter}`} `, B(renteText),
+        ` auszahlen lässt und das restliche Geld weiterhin ${pz(p.zinsEntnahme)} pro Jahr bringt, `);
       if (Number.isFinite(e.reichweiteJahre)) {
-        aus.push('reicht Ihr Vermögen ', B(jahreText(e.reichweiteJahre)), ' – also ungefähr bis Sie ',
-          B(f0.format(Math.floor(e.endeAlter + 1e-9))), ' sind. Danach ist es aufgebraucht.');
+        aus.push('reicht dein Vermögen ', B(jahreText(e.reichweiteJahre)), ' – also ungefähr bis du ',
+          B(f0.format(reichtBisAlter(p, e))), ' bist. Danach ist es aufgebraucht.');
         gesamt();
       } else {
-        aus.push('wird Ihr Vermögen ', B('nie aufgebraucht'), ': Die laufenden Erträge sind mindestens so hoch wie Ihre Rente.');
+        aus.push('wird dein Vermögen ', B('nie aufgebraucht'), ': Die laufenden Erträge sind mindestens so hoch wie deine Rente.');
       }
     } else {
-      aus.push(`${start} bekommen Sie `, B(jahreText(e.reichweiteJahre)), ' lang, also bis Sie ',
-        B(nf(0, 1).format(e.endeAlter)), ' sind, ', B(renteText), ' Rente');
+      aus.push(`${start} bekommst du `, B(jahreText(e.reichweiteJahre)), ' lang, also bis du ',
+        B(nf(0, 1).format(e.endeAlter)), ' bist, ', B(renteText), ' Rente');
       if (p.rentenDynamik && e.anzeigeJahre > 1) {
         aus.push(`, die jedes Jahr um ${pz(p.rentenDynamik)} steigt – zuletzt sind es ${euro(p.rente * Math.pow(1 + p.rentenDynamik, e.anzeigeJahre - 1), 2)}`);
       }
@@ -604,7 +607,6 @@
 
   $('#f-sparIntervall').addEventListener('change', (e) => { zustand.werte.sparIntervall = Number(e.target.value); berechnen(); });
   $('#f-rentenIntervall').addEventListener('change', (e) => { zustand.werte.rentenIntervall = Number(e.target.value); berechnen(); });
-  $('#f-vorschuessig').addEventListener('change', (e) => { zustand.werte.vorschuessig = e.target.value === 'true'; berechnen(); });
 
   for (const r of $$('input[name="entnahmeModus"]')) {
     r.addEventListener('change', () => { zustand.werte.entnahmeModus = r.value; berechnen(); });

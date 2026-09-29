@@ -43,7 +43,7 @@
     entnahmeModus: 'ewig', // 'dauer' (Kapitalverzehr) | 'ewig' (nur Zinsen)
     entnahmeDauer: 25,
     restkapital: 0,
-    vorschuessig: true,
+    vorschuessig: false, // Zahlungen am Periodenende; in der Oberfläche nicht einstellbar
   });
 
   // Was berechnet wird und welches Eingabefeld dadurch zum Ergebnis wird.
