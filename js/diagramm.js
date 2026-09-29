@@ -49,16 +49,25 @@
     let ein = p.anfangskapital;
     let aus = 0;
     punkte.push({
-      alter: p.alterHeute, jahr: p.startJahr, kapital: rows.length ? rows[0].kapitalAnfang : p.anfangskapital,
-      ein, aus, phase: rows.length ? rows[0].phase : 'anspar',
+      alter: p.alterHeute,
+      jahr: p.startJahr,
+      kapital: rows.length ? rows[0].kapitalAnfang : p.anfangskapital,
+      ein,
+      aus,
+      phase: rows.length ? rows[0].phase : 'anspar',
     });
     for (const r of rows) {
       if (r.einmalzahlung > 0) {
         // Teilauszahlung als senkrechten Sprung zu Beginn der Auszahlphase darstellen
         aus += r.einmalzahlung;
         punkte.push({
-          alter: r.alter, jahr: r.jahr, kapital: r.kapitalAnfang - r.einmalzahlung,
-          ein, aus, phase: r.phase, nachTeilauszahlung: true,
+          alter: r.alter,
+          jahr: r.jahr,
+          kapital: r.kapitalAnfang - r.einmalzahlung,
+          ein,
+          aus,
+          phase: r.phase,
+          nachTeilauszahlung: true,
         });
         aus -= r.einmalzahlung;
       }
@@ -152,7 +161,11 @@
     this.sx = sx;
 
     const svg = el('svg', {
-      viewBox: `0 0 ${W} ${H}`, width: W, height: H, tabindex: '0', role: 'img',
+      viewBox: `0 0 ${W} ${H}`,
+      width: W,
+      height: H,
+      tabindex: '0',
+      role: 'img',
       'aria-label': 'Kapitalverlauf über die Jahre. Pfeiltasten zeigen die Werte einzelner Jahre.',
     });
     this.svg = svg;
@@ -160,9 +173,29 @@
     // Phasenbänder
     const bandY = m.t;
     if (d.auszahlBeginn > d.sparEnde) {
-      el('rect', { x: sx(d.sparEnde), y: bandY, width: sx(d.auszahlBeginn) - sx(d.sparEnde), height: ih, fill: 'var(--band-ruhe)' }, svg);
+      el(
+        'rect',
+        {
+          x: sx(d.sparEnde),
+          y: bandY,
+          width: sx(d.auszahlBeginn) - sx(d.sparEnde),
+          height: ih,
+          fill: 'var(--band-ruhe)',
+        },
+        svg,
+      );
     }
-    el('rect', { x: sx(d.auszahlBeginn), y: bandY, width: sx(x1) - sx(d.auszahlBeginn), height: ih, fill: 'var(--band-entnahme)' }, svg);
+    el(
+      'rect',
+      {
+        x: sx(d.auszahlBeginn),
+        y: bandY,
+        width: sx(x1) - sx(d.auszahlBeginn),
+        height: ih,
+        fill: 'var(--band-entnahme)',
+      },
+      svg,
+    );
     const bandLabel = (text, a, b) => {
       if (sx(b) - sx(a) < text.length * 7 + 12) return;
       const t = el('text', { x: sx(a) + 8, y: m.t - 10, class: 'band-label' }, svg);
@@ -195,40 +228,87 @@
     tAlter.textContent = 'Alter';
 
     // Kapital-Fläche
-    const linie = (key, von = 0) => P.slice(von).map((p, i) => `${i ? 'L' : 'M'}${sx(p.alter).toFixed(1)},${sy(p[key]).toFixed(1)}`).join('');
+    const linie = (key, von = 0) =>
+      P.slice(von)
+        .map((p, i) => `${i ? 'L' : 'M'}${sx(p.alter).toFixed(1)},${sy(p[key]).toFixed(1)}`)
+        .join('');
     const flaeche = `${linie('kapital')}L${sx(x1).toFixed(1)},${sy(0)}L${sx(x0).toFixed(1)},${sy(0)}Z`;
     el('path', { d: flaeche, fill: 'var(--series-kapital)', 'fill-opacity': '0.16' }, svg);
-    el('path', { d: linie('kapital'), fill: 'none', stroke: 'var(--series-kapital)', 'stroke-width': 2, 'stroke-linejoin': 'round' }, svg);
+    el(
+      'path',
+      {
+        d: linie('kapital'),
+        fill: 'none',
+        stroke: 'var(--series-kapital)',
+        'stroke-width': 2,
+        'stroke-linejoin': 'round',
+      },
+      svg,
+    );
 
     // Summe Einzahlungen
-    el('path', {
-      d: linie('ein'), fill: 'none', stroke: 'var(--series-ein)', 'stroke-width': 2,
-      'stroke-dasharray': '6 4', 'stroke-linejoin': 'round',
-    }, svg);
+    el(
+      'path',
+      {
+        d: linie('ein'),
+        fill: 'none',
+        stroke: 'var(--series-ein)',
+        'stroke-width': 2,
+        'stroke-dasharray': '6 4',
+        'stroke-linejoin': 'round',
+      },
+      svg,
+    );
 
     // Summe Auszahlungen (ab Auszahlbeginn)
     const iStart = P.findIndex((p) => p.alter >= d.auszahlBeginn);
     if (iStart >= 0 && iStart < P.length - 1) {
-      el('path', { d: linie('aus', iStart), fill: 'none', stroke: 'var(--series-aus)', 'stroke-width': 2, 'stroke-linejoin': 'round' }, svg);
+      el(
+        'path',
+        {
+          d: linie('aus', iStart),
+          fill: 'none',
+          stroke: 'var(--series-aus)',
+          'stroke-width': 2,
+          'stroke-linejoin': 'round',
+        },
+        svg,
+      );
     }
 
     // Markierung Auszahlbeginn mit Direktbeschriftung
     const xa = sx(d.auszahlBeginn);
     el('line', { x1: xa, x2: xa, y1: m.t, y2: m.t + ih, class: 'markierung' }, svg);
     const ya = sy(d.kapitalAuszahlbeginn);
-    el('circle', { cx: xa, cy: ya, r: 5, fill: 'var(--series-kapital)', stroke: 'var(--surface)', 'stroke-width': 2 }, svg);
+    el(
+      'circle',
+      { cx: xa, cy: ya, r: 5, fill: 'var(--series-kapital)', stroke: 'var(--surface)', 'stroke-width': 2 },
+      svg,
+    );
     const links = xa - m.l > 150 || xa > m.l + iw - 150;
-    const lbl = el('text', {
-      x: links ? xa - 10 : xa + 10, y: Math.max(ya - 10, m.t + 14),
-      'text-anchor': links ? 'end' : 'start', class: 'direkt-label',
-    }, svg);
+    const lbl = el(
+      'text',
+      {
+        x: links ? xa - 10 : xa + 10,
+        y: Math.max(ya - 10, m.t + 14),
+        'text-anchor': links ? 'end' : 'start',
+        class: 'direkt-label',
+      },
+      svg,
+    );
     lbl.textContent = fmtEuro.format(d.kapitalAuszahlbeginn);
 
     // Interaktion
     const hover = el('g', { visibility: 'hidden' }, svg);
     el('line', { y1: m.t, y2: m.t + ih, class: 'fadenkreuz' }, hover);
-    const punkte = SERIEN.map((s) => el('circle', { r: 4.5, fill: `var(${s.farbe})`, stroke: 'var(--surface)', 'stroke-width': 2 }, hover));
-    const treffer = el('rect', { x: m.l, y: m.t, width: iw, height: ih, fill: 'transparent', style: 'cursor:crosshair' }, svg);
+    const punkte = SERIEN.map((s) =>
+      el('circle', { r: 4.5, fill: `var(${s.farbe})`, stroke: 'var(--surface)', 'stroke-width': 2 }, hover),
+    );
+    const treffer = el(
+      'rect',
+      { x: m.l, y: m.t, width: iw, height: ih, fill: 'transparent', style: 'cursor:crosshair' },
+      svg,
+    );
 
     const zeige = (i) => {
       i = Math.max(0, Math.min(P.length - 1, i));
@@ -266,15 +346,25 @@
     treffer.addEventListener('pointermove', (e) => zeige(naechster(e)));
     treffer.addEventListener('pointerdown', (e) => zeige(naechster(e)));
     treffer.addEventListener('pointerleave', verstecke);
-    svg.addEventListener('focus', () => zeige(this.idx == null ? P.findIndex((p) => p.alter >= d.auszahlBeginn) : this.idx));
+    svg.addEventListener('focus', () =>
+      zeige(this.idx == null ? P.findIndex((p) => p.alter >= d.auszahlBeginn) : this.idx),
+    );
     svg.addEventListener('blur', verstecke);
     svg.addEventListener('keydown', (e) => {
       const i = this.idx == null ? 0 : this.idx;
-      if (e.key === 'ArrowRight') { zeige(i + 1); e.preventDefault(); }
-      else if (e.key === 'ArrowLeft') { zeige(i - 1); e.preventDefault(); }
-      else if (e.key === 'Home') { zeige(0); e.preventDefault(); }
-      else if (e.key === 'End') { zeige(P.length - 1); e.preventDefault(); }
-      else if (e.key === 'Escape') verstecke();
+      if (e.key === 'ArrowRight') {
+        zeige(i + 1);
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft') {
+        zeige(i - 1);
+        e.preventDefault();
+      } else if (e.key === 'Home') {
+        zeige(0);
+        e.preventDefault();
+      } else if (e.key === 'End') {
+        zeige(P.length - 1);
+        e.preventDefault();
+      } else if (e.key === 'Escape') verstecke();
     });
 
     c.insertBefore(svg, this.tooltip);

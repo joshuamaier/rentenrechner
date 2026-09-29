@@ -33,10 +33,12 @@
   --warn-border: #b8944a;
   --error-bg: #fbeeec;
   --error-border: #b4442f;
+  --warn-text: #9a3a26;
 
   --radius: 2px;
   --radius-s: 2px;
-  --font: "Inter", "Inter Placeholder", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font:
+    'Inter', 'Inter Placeholder', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
   display: grid;
   gap: 24px;
@@ -47,12 +49,34 @@
 }
 
 /* ---------- Basis ---------- */
-.rr *, .rr *::before, .rr *::after { box-sizing: border-box; }
-.rr h2, .rr h3 { margin: 0; line-height: 1.25; text-wrap: balance; color: var(--text); }
-.rr button, .rr input, .rr select { font: inherit; color: inherit; }
+.rr *,
+.rr *::before,
+.rr *::after {
+  box-sizing: border-box;
+}
+.rr h2,
+.rr h3 {
+  margin: 0;
+  line-height: 1.25;
+  text-wrap: balance;
+  color: var(--text);
+}
+.rr button,
+.rr input,
+.rr select {
+  font: inherit;
+  color: inherit;
+}
 .rr .sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .rr .karte {
@@ -63,67 +87,201 @@
   min-width: 0;
 }
 .rr .karte-kopf {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 12px; margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
 }
-.rr .karte-kopf h2, .rr .abschnitt-titel { font-size: 18px; font-weight: 600; letter-spacing: -0.2px; }
-.rr .abschnitt-titel { margin-bottom: 12px; }
+.rr .karte-kopf h2,
+.rr .abschnitt-titel {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+.rr .abschnitt-titel {
+  margin-bottom: 12px;
+}
 
 /* ---------- Ergebnis als Fließtext ---------- */
-.rr .ergebnis-text { margin-bottom: 12px; padding: 22px 24px; border-left: 2px solid var(--gold); font-size: 16px; line-height: 1.7; }
-.rr .ergebnis-text p { margin: 0; max-width: 78ch; color: #353d4a; }
-.rr .ergebnis-text p + p { margin-top: 12px; }
-.rr .ergebnis-text strong { font-weight: 600; color: var(--text); }
-.rr .ergebnis-text.veraltet { opacity: 0.45; }
+.rr .ergebnis-text {
+  margin-bottom: 12px;
+  padding: 22px 24px;
+  border-left: 2px solid var(--gold);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.rr .ergebnis-text p {
+  margin: 0;
+  max-width: 78ch;
+  color: #353d4a;
+}
+.rr .ergebnis-text p + p {
+  margin-top: 12px;
+}
+.rr .ergebnis-text strong {
+  font-weight: 600;
+  color: var(--text);
+}
+.rr .ergebnis-text.veraltet {
+  opacity: 0.45;
+}
 
 /* ---------- Berechnungsziel ---------- */
-.rr .ziel-auswahl { border: 0; margin: 0; padding: 0; min-width: 0; }
-.rr .ziel-auswahl > legend { font-weight: 600; font-size: 18px; letter-spacing: -0.2px; margin-bottom: 14px; padding: 0; }
-.rr .ziel-gruppen { display: flex; flex-wrap: wrap; gap: 16px 28px; }
-.rr .ziel-gruppe { display: grid; gap: 8px; min-width: 0; }
+.rr .ziel-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+}
+.rr .ziel-kopf h2 {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.2px;
+}
+.rr .ziel-gruppen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 28px;
+}
+.rr .ziel-gruppe {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
 .rr .ziel-gruppe-titel {
-  font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--calc); font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--calc);
+  font-weight: 600;
 }
 
 .rr .segmente {
-  display: inline-flex; flex-wrap: wrap; gap: 2px;
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 3px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px;
 }
-.rr .segmente label { position: relative; cursor: pointer; }
-.rr .segmente input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.rr .segmente label {
+  position: relative;
+  cursor: pointer;
+}
+.rr .segmente input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
 .rr .segmente span {
-  display: block; padding: 7px 14px; border-radius: var(--radius);
-  color: var(--text-2); font-weight: 500; font-size: 14.5px; white-space: nowrap;
-  transition: background 0.15s, color 0.15s;
+  display: block;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-weight: 500;
+  font-size: 14.5px;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
-.rr .segmente label:hover span { color: var(--text); background: var(--accent-soft); }
-.rr .segmente input:checked + span { background: var(--accent); color: var(--accent-text); }
-.rr .segmente input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
-.rr .segmente-klein span { padding: 5px 12px; font-size: 13.5px; }
+.rr .segmente label:hover span {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.rr .segmente input:checked + span {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.rr .segmente input:focus-visible + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.rr .segmente-klein span {
+  padding: 5px 12px;
+  font-size: 13.5px;
+}
 
-.rr .optionen {
-  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px;
-  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border);
+/* Startjahr in der Reihe der Rechenziele, gleich hoch wie die Segmente */
+.rr .option-startjahr {
+  margin-left: auto;
 }
-.rr .option { display: grid; gap: 4px; font-size: 13px; color: var(--text-2); }
-.rr .option select, .rr .option input {
-  height: 38px; border: 1px solid var(--border-strong); border-radius: var(--radius-s);
-  background: var(--surface); padding: 0 10px; color: var(--text);
+.rr .option-startjahr input {
+  height: 43px;
+  width: 90px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  padding: 0 10px;
+  color: var(--text);
+  text-align: right;
 }
-.rr .option select:focus-visible, .rr .option input:focus-visible { outline: none; border-color: var(--text); }
-.rr .option input.kurz { width: 90px; }
-.rr .option-knoepfe { display: flex; gap: 8px; margin-left: auto; }
+.rr .option-startjahr input:focus-visible {
+  outline: none;
+  border-color: var(--text);
+}
+.rr .option.ungueltig input {
+  border-color: var(--error-border);
+}
+
+/* Link kopieren / Zurücksetzen: dezent oben rechts */
+.rr .option-knoepfe {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+}
+.rr .knopf-dezent {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.rr .knopf-dezent:hover {
+  color: var(--text);
+  border-bottom-color: var(--gold);
+}
+.rr .knopf-dezent:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
 
 .rr .knopf-sekundaer {
-  height: 38px; padding: 0 16px; border-radius: 3px;
-  border: 1px solid var(--border-strong); background: transparent;
-  color: var(--text); cursor: pointer; font-weight: 600; font-size: 13.5px;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
-.rr .knopf-sekundaer:hover { border-color: var(--text); transform: translateY(-1px); }
-.rr .knopf-sekundaer:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.rr .knopf-sekundaer:hover {
+  border-color: var(--text);
+  transform: translateY(-1px);
+}
+.rr .knopf-sekundaer:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
 
 /* ---------- Phasen ---------- */
 .rr .phasen {
@@ -132,164 +290,600 @@
   gap: 12px;
   align-items: stretch;
 }
-.rr .phasen-pfeil { display: flex; align-items: center; color: var(--gold); }
-.rr .phase { border-top-width: 3px; }
-.rr .phase-anspar { border-top-color: var(--series-ein); }
-.rr .phase-entnahme { border-top-color: var(--series-aus); }
-.rr .phase-kopf { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.rr .phase-kopf h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.4px; }
-.rr .phase-sub { margin: 0; color: var(--text-2); font-size: 13.5px; }
-.rr .phase-kennzahl { margin-left: auto; text-align: right; min-width: 0; }
-.rr .phase-kennzahl:empty { display: none; }
-.rr .kennzahl-titel { color: var(--text-2); font-size: 12px; }
-.rr .kennzahl-wert { font-size: 20px; font-weight: 600; line-height: 1.2; letter-spacing: -0.4px; color: var(--calc); }
-.rr .kennzahl-wert .kachel-einheit { font-size: 12px; }
-.rr .kennzahl-zusatz { color: var(--text-3); font-size: 12px; }
-.rr .phase-kennzahl.veraltet { opacity: 0.45; }
+.rr .phasen-pfeil {
+  display: flex;
+  align-items: center;
+  color: var(--gold);
+}
+.rr .phase {
+  border-top-width: 3px;
+}
+.rr .phase-anspar {
+  border-top-color: var(--series-ein);
+}
+.rr .phase-entnahme {
+  border-top-color: var(--series-aus);
+}
+.rr .phase-kopf {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.rr .phase-kopf h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+.rr .phase-sub {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 13.5px;
+}
+.rr .phase-kennzahl {
+  margin-left: auto;
+  text-align: right;
+  min-width: 0;
+}
+.rr .phase-kennzahl:empty {
+  display: none;
+}
+.rr .kennzahl-titel {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.rr .kennzahl-wert {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  color: var(--calc);
+}
+.rr .kennzahl-wert .kachel-einheit {
+  font-size: 12px;
+}
+.rr .kennzahl-zusatz {
+  color: var(--text-3);
+  font-size: 12px;
+}
+.rr .phase-kennzahl.veraltet {
+  opacity: 0.45;
+}
 .rr .phase-nr {
-  display: grid; place-items: center; width: 34px; height: 34px; flex: none;
-  border: 1px solid var(--border-strong); border-radius: 50%;
-  font-size: 13px; font-weight: 600; color: var(--calc);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--calc);
 }
 
-.rr .felder { display: grid; gap: 16px; }
-.rr .feld-reihe { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.rr .feld-reihe-rente { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
-.rr .feld { display: grid; align-content: start; gap: 6px; min-width: 0; margin: 0; padding: 0; border: 0; }
-.rr .feld[hidden] { display: none; }
-.rr .feld > label, .rr .feld > legend { font-weight: 500; font-size: 14px; padding: 0; }
-.rr .feld-modus { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-.rr .feld-modus[hidden] { display: none; }
-.rr .feld-titel { font-weight: 500; font-size: 14px; }
+.rr .felder {
+  display: grid;
+  gap: 16px;
+}
+.rr .feld-reihe {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.rr .feld-reihe-rente {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+.rr .feld {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.rr .feld[hidden] {
+  display: none;
+}
+.rr .feld > label,
+.rr .feld > legend {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 0;
+}
+.rr .feld-modus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.rr .feld-modus[hidden] {
+  display: none;
+}
+.rr .feld-titel {
+  font-weight: 500;
+  font-size: 14px;
+}
 /* Steht in einer Zeile nur noch ein Feld (das andere ist ausgeblendet), nimmt es die volle Breite ein. */
-.rr .feld-reihe:has(> .feld[hidden]) > .feld:not([hidden]) { grid-column: 1 / -1; }
-.rr .feld-reihe:not(:has(> .feld:not([hidden]))) { display: none; }
-.rr .hilfe { color: var(--text-3); font-size: 12.5px; min-height: 0; }
-.rr .hilfe:empty { display: none; }
+.rr .feld-reihe:has(> .feld[hidden]) > .feld:not([hidden]) {
+  grid-column: 1 / -1;
+}
+.rr .feld-reihe:not(:has(> .feld:not([hidden]))) {
+  display: none;
+}
+.rr .hilfe {
+  color: var(--text-3);
+  font-size: 12.5px;
+  min-height: 0;
+}
+.rr .hilfe:empty {
+  display: none;
+}
 
 .rr .eingabe {
-  display: flex; align-items: stretch; min-width: 0;
-  border: 1px solid var(--border-strong); border-radius: var(--radius-s);
-  background: var(--surface); overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
-.rr .eingabe:focus-within { border-color: var(--text); box-shadow: 0 0 0 3px var(--accent-soft); }
+.rr .eingabe:focus-within {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
 .rr .eingabe input {
-  flex: 1 1 auto; min-width: 0; width: 100%; border: 0; background: transparent;
-  padding: 9px 10px; text-align: right; outline: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 9px 10px;
+  text-align: right;
+  outline: none;
 }
 .rr .eingabe .einheit {
-  display: flex; align-items: center; padding: 0 10px 0 2px;
-  color: var(--text-3); font-size: 13px; white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 2px;
+  color: var(--text-3);
+  font-size: 13px;
+  white-space: nowrap;
 }
 .rr .eingabe select {
-  border: 0; border-left: 1px solid var(--border); background: var(--surface-2);
-  padding: 0 8px; cursor: pointer; outline: none; font-size: 13.5px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 0 8px;
+  cursor: pointer;
+  outline: none;
+  font-size: 13.5px;
 }
-.rr .eingabe select:focus-visible { box-shadow: inset 0 0 0 2px var(--gold); }
+.rr .eingabe select:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--gold);
+}
 
-.rr .feld.ungueltig .eingabe { border-color: var(--error-border); }
+.rr .feld.ungueltig .eingabe {
+  border-color: var(--error-border);
+}
 
 /* berechnetes Feld (Zielgröße) */
-.rr .feld.berechnet .eingabe { background: var(--calc-bg); border-color: var(--gold); border-style: dashed; }
-.rr .feld.berechnet input { font-weight: 700; color: var(--calc); cursor: default; }
-.rr .feld.berechnet > label::after, .rr .feld.berechnet > legend::after {
-  content: "berechnet"; margin-left: 8px; padding: 1px 7px; border-radius: 2px;
-  background: var(--calc); color: #fff; font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 1px;
+.rr .feld.berechnet .eingabe {
+  background: var(--calc-bg);
+  border-color: var(--gold);
+  border-style: dashed;
+}
+.rr .feld.berechnet input {
+  font-weight: 700;
+  color: var(--calc);
+  cursor: default;
+}
+.rr .feld.berechnet > label::after,
+.rr .feld.berechnet > legend::after {
+  content: 'berechnet';
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 2px;
+  background: var(--calc);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+/* ---------- Plausibilitätshinweise ---------- */
+.rr .feld.plausi-hinweis .eingabe {
+  border-color: var(--gold);
+  background: #fdf8ee;
+}
+.rr .feld.plausi-warnung .eingabe {
+  border-color: var(--error-border);
+  background: var(--error-bg);
+}
+.rr .feld.plausi-hinweis .eingabe:focus-within {
+  box-shadow: 0 0 0 3px rgba(184, 148, 74, 0.22);
+}
+.rr .feld.plausi-warnung .eingabe:focus-within {
+  box-shadow: 0 0 0 3px rgba(180, 68, 47, 0.16);
+}
+.rr .plausi-text {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.rr .plausi-text::before {
+  content: '!';
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  transform: translateY(2px);
+}
+.rr .plausi-hinweis .plausi-text {
+  color: var(--calc);
+}
+.rr .plausi-hinweis .plausi-text::before {
+  background: var(--gold);
+}
+.rr .plausi-warnung .plausi-text {
+  color: var(--warn-text);
+}
+.rr .plausi-warnung .plausi-text::before {
+  background: var(--error-border);
+}
+
+.rr .plausi-block {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--warn-bg);
+  border-left: 2px solid var(--gold);
+}
+.rr .plausi-block.warnung {
+  background: var(--error-bg);
+  border-left-color: var(--error-border);
+}
+.rr .ergebnis-text .plausi-block p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.rr .ergebnis-text .plausi-block p + p {
+  margin-top: 8px;
+}
+.rr .ergebnis-text .plausi-intro {
+  font-weight: 600;
+  color: var(--text);
+}
+.rr .ergebnis-text .plausi-punkt strong {
+  color: var(--calc);
+}
+.rr .ergebnis-text .plausi-punkt.warnung strong {
+  color: var(--warn-text);
 }
 
 /* ---------- Meldungen ---------- */
-.rr .meldungen { display: grid; gap: 8px; }
-.rr .meldungen:empty { display: none; }
-.rr .meldung {
-  margin: 0; padding: 12px 16px;
-  border-left: 2px solid var(--warn-border); background: var(--warn-bg);
+.rr .meldungen {
+  display: grid;
+  gap: 8px;
 }
-.rr .meldung.fehler { border-left-color: var(--error-border); background: var(--error-bg); }
-.rr .meldung strong { margin-right: 6px; }
+.rr .meldungen:empty {
+  display: none;
+}
+.rr .meldung {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--warn-border);
+  background: var(--warn-bg);
+}
+.rr .meldung.fehler {
+  border-left-color: var(--error-border);
+  background: var(--error-bg);
+}
+.rr .meldung strong {
+  margin-right: 6px;
+}
 
 /* ---------- Ergebnis-Kacheln ---------- */
 .rr .kacheln {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px;
-  background: var(--border); border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
 }
-.rr .kachel { background: var(--surface); padding: 16px 18px; min-width: 0; }
-.rr .kachel-titel { color: var(--text-2); font-size: 13px; }
-.rr .kachel-wert { font-size: 22px; font-weight: 600; margin-top: 2px; letter-spacing: -0.4px; overflow-wrap: anywhere; }
-.rr .kachel-zusatz { color: var(--text-3); font-size: 12.5px; margin-top: 2px; }
-.rr .kachel-einheit { font-size: 13px; font-weight: 500; color: var(--text-2); letter-spacing: 0; white-space: nowrap; }
-.rr .kachel.haupt { background: var(--calc-bg); box-shadow: inset 3px 0 0 var(--gold); }
-.rr .kachel.haupt .kachel-titel { color: var(--calc); font-weight: 600; }
-.rr .kachel.haupt .kachel-wert { font-size: 26px; }
-.rr .kacheln.veraltet { opacity: 0.45; }
+.rr .kachel {
+  background: var(--surface);
+  padding: 16px 18px;
+  min-width: 0;
+}
+.rr .kachel-titel {
+  color: var(--text-2);
+  font-size: 13px;
+}
+.rr .kachel-wert {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 2px;
+  letter-spacing: -0.4px;
+  overflow-wrap: anywhere;
+}
+.rr .kachel-zusatz {
+  color: var(--text-3);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+.rr .kachel-einheit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.rr .kachel.haupt {
+  background: var(--calc-bg);
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+.rr .kachel.haupt .kachel-titel {
+  color: var(--calc);
+  font-weight: 600;
+}
+.rr .kachel.haupt .kachel-wert {
+  font-size: 26px;
+}
+.rr .kacheln.veraltet {
+  opacity: 0.45;
+}
 
 /* ---------- Diagramm ---------- */
-.rr .legende { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; font-size: 13px; color: var(--text-2); }
-.rr .legende li { display: flex; align-items: center; gap: 6px; }
-.rr .legende .schluessel-flaeche { width: 14px; height: 10px; border-radius: 1px; }
-.rr .legende .schluessel-linie { width: 18px; height: 0; border-top: 2px solid; }
-.rr .legende .schluessel-linie.gestrichelt { border-top-style: dashed; }
-.rr .legende .schluessel-band { width: 14px; height: 10px; border-radius: 1px; border: 1px solid var(--border-strong); }
+.rr .legende {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.rr .legende li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rr .legende .schluessel-flaeche {
+  width: 14px;
+  height: 10px;
+  border-radius: 1px;
+}
+.rr .legende .schluessel-linie {
+  width: 18px;
+  height: 0;
+  border-top: 2px solid;
+}
+.rr .legende .schluessel-linie.gestrichelt {
+  border-top-style: dashed;
+}
+.rr .legende .schluessel-band {
+  width: 14px;
+  height: 10px;
+  border-radius: 1px;
+  border: 1px solid var(--border-strong);
+}
 
-.rr .diagramm { position: relative; width: 100%; min-height: 320px; }
-.rr .diagramm svg { display: block; width: 100%; height: auto; overflow: visible; }
-.rr .diagramm svg:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
-.rr .diagramm .achse text, .rr .diagramm .beschriftung { fill: var(--text-3); font-size: 12px; }
-.rr .diagramm .gitter line { stroke: var(--grid); stroke-width: 1; }
-.rr .diagramm .nulllinie { stroke: var(--border-strong); stroke-width: 1; }
-.rr .diagramm .band-label { fill: var(--text-2); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-.rr .diagramm .markierung { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
-.rr .diagramm .direkt-label { fill: var(--text); font-size: 12px; font-weight: 600; }
-.rr .diagramm .fadenkreuz { stroke: var(--text-2); stroke-width: 1; }
+.rr .diagramm {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+}
+.rr .diagramm svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.rr .diagramm svg:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+.rr .diagramm .achse text,
+.rr .diagramm .beschriftung {
+  fill: var(--text-3);
+  font-size: 12px;
+}
+.rr .diagramm .gitter line {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+.rr .diagramm .nulllinie {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+.rr .diagramm .band-label {
+  fill: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.rr .diagramm .markierung {
+  stroke: var(--text-3);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.rr .diagramm .direkt-label {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+.rr .diagramm .fadenkreuz {
+  stroke: var(--text-2);
+  stroke-width: 1;
+}
 
 .rr .tooltip {
-  position: absolute; pointer-events: none; z-index: 5;
-  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-s);
-  box-shadow: 0 6px 20px rgba(27, 35, 48, 0.10); padding: 8px 12px; font-size: 13px;
-  min-width: 200px; transform: translate(-50%, 0);
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  box-shadow: 0 6px 20px rgba(27, 35, 48, 0.1);
+  padding: 8px 12px;
+  font-size: 13px;
+  min-width: 200px;
+  transform: translate(-50%, 0);
 }
-.rr .tooltip[hidden] { display: none; }
-.rr .tooltip-kopf { color: var(--text-2); margin-bottom: 4px; font-size: 12px; }
-.rr .tooltip-zeile { display: flex; align-items: center; gap: 8px; }
-.rr .tooltip-zeile .schluessel { width: 12px; height: 0; border-top: 2px solid; flex: none; }
-.rr .tooltip-zeile .schluessel.gestrichelt { border-top-style: dashed; }
-.rr .tooltip-zeile strong { margin-left: auto; padding-left: 12px; font-weight: 600; }
-.rr .tooltip-zeile span.name { color: var(--text-2); }
+.rr .tooltip[hidden] {
+  display: none;
+}
+.rr .tooltip-kopf {
+  color: var(--text-2);
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.rr .tooltip-zeile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rr .tooltip-zeile .schluessel {
+  width: 12px;
+  height: 0;
+  border-top: 2px solid;
+  flex: none;
+}
+.rr .tooltip-zeile .schluessel.gestrichelt {
+  border-top-style: dashed;
+}
+.rr .tooltip-zeile strong {
+  margin-left: auto;
+  padding-left: 12px;
+  font-weight: 600;
+}
+.rr .tooltip-zeile span.name {
+  color: var(--text-2);
+}
 
 /* ---------- Tabelle ---------- */
-.rr .tabelle-rahmen { overflow: auto; max-height: 560px; border: 1px solid var(--border); }
-.rr .tabelle { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-.rr .tabelle th, .rr .tabelle td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--border); }
-.rr .tabelle th:nth-child(-n+3), .rr .tabelle td:nth-child(-n+3) { text-align: left; }
-.rr .tabelle thead th {
-  position: sticky; top: 0; z-index: 1; background: var(--surface-2);
-  font-weight: 600; color: var(--text-2); font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase;
+.rr .tabelle-rahmen {
+  overflow: auto;
+  max-height: 560px;
+  border: 1px solid var(--border);
 }
-.rr .tabelle tbody tr:hover td { background: var(--bg); }
-.rr .tabelle tfoot td { position: sticky; bottom: 0; background: var(--surface-2); font-weight: 600; border-top: 1px solid var(--border-strong); }
-.rr .tabelle tr.phasenwechsel td { border-top: 1px solid var(--border-strong); }
-.rr .tabelle .negativ { color: var(--text-2); }
-.rr .tabelle .leer { color: var(--text-3); }
+.rr .tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.rr .tabelle th,
+.rr .tabelle td {
+  padding: 8px 12px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.rr .tabelle th:nth-child(-n + 3),
+.rr .tabelle td:nth-child(-n + 3) {
+  text-align: left;
+}
+.rr .tabelle thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-2);
+  font-weight: 600;
+  color: var(--text-2);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.rr .tabelle tbody tr:hover td {
+  background: var(--bg);
+}
+.rr .tabelle tfoot td {
+  position: sticky;
+  bottom: 0;
+  background: var(--surface-2);
+  font-weight: 600;
+  border-top: 1px solid var(--border-strong);
+}
+.rr .tabelle tr.phasenwechsel td {
+  border-top: 1px solid var(--border-strong);
+}
+.rr .tabelle .negativ {
+  color: var(--text-2);
+}
+.rr .tabelle .leer {
+  color: var(--text-3);
+}
 
 .rr .phase-chip {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-2);
 }
-.rr .phase-chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--series-ein); }
-.rr .phase-chip.ruhe::before { background: var(--text-3); }
-.rr .phase-chip.entnahme::before { background: var(--series-aus); }
+.rr .phase-chip::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--series-ein);
+}
+.rr .phase-chip.ruhe::before {
+  background: var(--text-3);
+}
+.rr .phase-chip.entnahme::before {
+  background: var(--series-aus);
+}
 
 /* ---------- Responsiv ---------- */
 @media (max-width: 900px) {
-  .rr .phasen { grid-template-columns: minmax(0, 1fr); }
-  .rr .phasen-pfeil { justify-content: center; transform: rotate(90deg); }
-  .rr .phase-kopf { flex-wrap: wrap; }
-  .rr .option-knoepfe { margin-left: 0; }
+  .rr .phasen {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rr .phasen-pfeil {
+    justify-content: center;
+    transform: rotate(90deg);
+  }
+  .rr .phase-kopf {
+    flex-wrap: wrap;
+  }
+  .rr .option-startjahr {
+    margin-left: 0;
+  }
 }
 @media (max-width: 520px) {
-  .rr .karte { padding: 18px 16px; }
-  .rr .feld-reihe { grid-template-columns: minmax(0, 1fr); }
-  .rr .segmente { display: flex; }
-  .rr .segmente label { flex: 1 1 auto; }
-  .rr .segmente span { white-space: normal; text-align: center; }
+  .rr .karte {
+    padding: 18px 16px;
+  }
+  .rr .feld-reihe {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rr .segmente {
+    display: flex;
+  }
+  .rr .segmente label {
+    flex: 1 1 auto;
+  }
+  .rr .segmente span {
+    white-space: normal;
+    text-align: center;
+  }
 }
