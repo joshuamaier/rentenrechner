@@ -18,6 +18,8 @@
   const euro = (v, nachkomma = 0) => `${(nachkomma ? f2 : f0).format(v)}\u00a0€`;
   const prozent = (v) => `${fProz.format(v * 100)} %`;
   const RHYTHMUS = { 12: 'Monat', 4: 'Quartal', 2: 'Halbjahr', 1: 'Jahr' };
+  const RHYTHMUS_ADV = { 12: 'monatlich', 4: 'vierteljährlich', 2: 'halbjährlich', 1: 'jährlich' };
+  const RHYTHMUS_ADJ = { 12: 'monatliche', 4: 'vierteljährliche', 2: 'halbjährliche', 1: 'jährliche' };
 
   function zahlText(v) {
     const ganz = Math.abs(v - Math.round(v)) < 0.005;
@@ -111,7 +113,7 @@
   }
 
   const LABELS = {
-    rente: { rente: 'Mögliche Rente', reichweite: 'Gewünschte Rente', sonst: 'Wunschrente' },
+    rente: { rente: 'Rente', reichweite: 'Gewünschte Rente', sonst: 'Wunschrente' },
     entnahmeDauer: { reichweite: 'Reichweite des Kapitals', sonst: 'Dauer der Auszahlung' },
     sparrate: { sparrate: 'Benötigter Sparbeitrag', sonst: 'Sparbeitrag' },
     anfangskapital: { anfangskapital: 'Benötigtes Anfangskapital', sonst: 'Anfangskapital' },
@@ -152,16 +154,20 @@
     aktualisiereFeldZustand();
     const erg = R.berechne(zustand.werte, zustand.ziel);
     zeigeMeldungen(erg);
+    const veraltet = !!erg.fehler;
+    for (const el of [$('#kacheln'), $('#ergebnis-text'), $('#kennzahl-anspar'), $('#kennzahl-entnahme')]) {
+      el.classList.toggle('veraltet', veraltet);
+    }
     if (erg.fehler) {
-      $('#kacheln').classList.add('veraltet');
       const ausgabe = $(`#f-${R.ZIELE[zustand.ziel].feld}`);
       ausgabe.value = '–';
       return;
     }
     letztesErgebnis = erg;
-    $('#kacheln').classList.remove('veraltet');
     schreibeAusgabe(erg);
     schreibeHilfen(erg);
+    zeigeKennzahlen(erg);
+    zeigeText(erg);
     zeigeKacheln(erg);
     diagramm.setze(erg);
     zeigeTabelle(erg);
@@ -239,6 +245,175 @@
     for (const h of erg.hinweise || []) neu(h, false);
   }
 
+  // ---------- Kennzahlen in den Kopfzeilen der Phasen ----------
+  function kennzahl(box, titel, wert, einheit, zusatz) {
+    box.textContent = '';
+    const t = document.createElement('div');
+    t.className = 'kennzahl-titel';
+    t.textContent = titel;
+    const w = document.createElement('div');
+    w.className = 'kennzahl-wert';
+    w.textContent = wert;
+    if (einheit) {
+      const e = document.createElement('span');
+      e.className = 'kachel-einheit';
+      e.textContent = ` ${einheit}`;
+      w.appendChild(e);
+    }
+    const z = document.createElement('div');
+    z.className = 'kennzahl-zusatz';
+    z.textContent = zusatz;
+    box.append(t, w, z);
+  }
+
+  function zeigeKennzahlen(erg) {
+    const p = erg.params;
+    const a = erg.anspar;
+    const e = erg.entnahme;
+    kennzahl($('#kennzahl-anspar'), `Kapital mit ${p.sparEndeAlter} Jahren`, euro(a.kapitalSparende), '',
+      a.ruheJahre > 0
+        ? `${euro(a.kapitalAuszahlbeginn)} bei Auszahlbeginn`
+        : `nach ${a.sparJahre} ${a.sparJahre === 1 ? 'Jahr' : 'Jahren'} (${p.startJahr + a.sparJahre})`);
+
+    // Bei der Reichweite ist das Ergebnis das Alter, bis zu dem die Rente reicht – sonst die Rente selbst.
+    if (zustand.ziel === 'reichweite') {
+      const endlich = Number.isFinite(e.reichweiteJahre);
+      kennzahl($('#kennzahl-entnahme'), 'Rente reicht bis',
+        endlich ? `Alter ${f0.format(Math.floor(e.endeAlter + 1e-9))}` : 'unbegrenzt', '',
+        endlich ? `${jahreText(e.reichweiteJahre)} lang` : 'Kapital wird nicht aufgebraucht');
+      return;
+    }
+    let zusatz;
+    if (e.modus === 'ewig') zusatz = 'ewige Rente – Kapital bleibt erhalten';
+    else if (!Number.isFinite(e.reichweiteJahre)) zusatz = 'Kapital wird nicht aufgebraucht';
+    else zusatz = `${jahreText(e.reichweiteJahre)}, bis Alter ${nf(0, 1).format(e.endeAlter)}`;
+    const titel = RHYTHMUS_ADJ[p.rentenIntervall];
+    kennzahl($('#kennzahl-entnahme'), `${titel.charAt(0).toUpperCase()}${titel.slice(1)} Rente`,
+      euro(p.rente, 2), '', zusatz);
+  }
+
+  // ---------- Ergebnis als Fließtext ----------
+  // Wiederholt die Eingaben und beschreibt das Ergebnis in Alltagssprache, ohne Fachbegriffe.
+  // Absätze bestehen aus Textteilen; { b: '…' } wird fett dargestellt.
+  function zeigeText(erg) {
+    const p = erg.params;
+    const a = erg.anspar;
+    const e = erg.entnahme;
+    const ziel = zustand.ziel;
+    const B = (s) => ({ b: s });
+    const pz = (v) => `${fProz.format(v * 100)} %`;
+    const jahre = (n) => `${n} ${n === 1 ? 'Jahr' : 'Jahre'}`;
+    const jahrenDativ = (n) => `${n} ${n === 1 ? 'Jahr' : 'Jahren'}`;
+    const renteText = `${RHYTHMUS_ADV[p.rentenIntervall]} ${euro(p.rente, 2)}`;
+    const sparText = `${RHYTHMUS_ADV[p.sparIntervall]} ${euro(p.sparrate, 2)}`;
+    const absaetze = [];
+
+    // Rückwärtsrechnung: Ziel und Lösung vorneweg
+    if (R.ZIELE[ziel].richtung === 'rueckwaerts') {
+      const dauer = e.modus === 'ewig' ? 'dauerhaft' : `${jahre(p.entnahmeDauer)} lang`;
+      const t = [
+        `Ihr Ziel: Ab ${p.auszahlBeginnAlter} Jahren möchten Sie ${dauer} `, B(renteText),
+        ' Rente bekommen. Dafür brauchen Sie zum Rentenbeginn ein Vermögen von ', B(euro(erg.kapitalBedarf)), '. ',
+      ];
+      const nichtNoetig = (erg.hinweise || []).length && erg.geloest.wert === 0;
+      if (ziel === 'sparrate') {
+        t.push(...(nichtNoetig
+          ? ['Das erreichen Sie schon ohne weitere Sparbeiträge – Ihr Startbetrag reicht bereits aus.']
+          : ['Das erreichen Sie, wenn Sie bis dahin ', B(sparText), ' zur Seite legen.']));
+      } else if (ziel === 'anfangskapital') {
+        t.push(...(nichtNoetig
+          ? ['Ein Startbetrag ist dafür nicht nötig – Ihre regelmäßigen Sparbeiträge reichen bereits aus.']
+          : ['Das erreichen Sie, wenn Sie heute einmalig ', B(euro(p.anfangskapital)), ' anlegen.']));
+      } else {
+        t.push('Das klappt, wenn sich Ihr Geld beim Sparen jedes Jahr um durchschnittlich ',
+          B(`${nf(2, 2).format(p.zinsAnspar * 100)} %`), ' vermehrt.');
+      }
+      absaetze.push(t);
+    }
+
+    // Ansparphase
+    const an = [`Sie sind heute ${p.alterHeute} Jahre alt`];
+    if (p.anfangskapital > 0) an.push(' und haben bereits ', B(euro(p.anfangskapital)), ' angelegt');
+    an.push('. ');
+    if (a.sparJahre > 0 && p.sparrate > 0) {
+      an.push(`Bis Sie ${p.sparEndeAlter} sind, legen Sie `, B(sparText), ' zur Seite');
+      if (p.sparDynamik) an.push(` und erhöhen den Betrag jedes Jahr um ${pz(p.sparDynamik)}`);
+      an.push('. ');
+    }
+    if (a.sparJahre > 0) {
+      const ertraege = a.kapitalSparende - a.einzahlungen;
+      an.push(`Wenn Ihr Geld dabei im Schnitt ${pz(p.zinsAnspar)} pro Jahr Ertrag bringt, sind nach ${jahrenDativ(a.sparJahre)} `,
+        B(euro(a.kapitalSparende)), ' zusammengekommen. Davon haben Sie selbst ', B(euro(a.einzahlungen)), ' eingezahlt');
+      if (ertraege >= 0.5) {
+        an.push(' – die übrigen ', B(euro(ertraege)), ' hat Ihr Geld durch Zinsen und Zinseszinsen für Sie erwirtschaftet. ');
+      } else {
+        an.push('. ');
+      }
+    }
+    if (a.ruheJahre > 0) {
+      an.push(`Danach zahlen Sie nichts mehr ein, das Geld bleibt aber noch ${jahre(a.ruheJahre)} angelegt und wächst bis zum Rentenbeginn mit ${p.auszahlBeginnAlter} auf `,
+        B(euro(a.kapitalAuszahlbeginn)), '.');
+    } else if (a.sparJahre === 0) {
+      an.push('Zum Rentenbeginn stehen Ihnen ', B(euro(a.kapitalAuszahlbeginn)), ' zur Verfügung.');
+    }
+    absaetze.push(an);
+
+    // Auszahlphase
+    const aus = [];
+    if (p.teilauszahlung > 0) {
+      aus.push(`Zum Rentenbeginn mit ${p.auszahlBeginnAlter} lassen Sie sich einmalig `, B(euro(p.teilauszahlung)),
+        ' auszahlen, zum Beispiel für eine größere Anschaffung. Übrig bleiben ', B(euro(e.kapitalNachTeilauszahlung)), '. ');
+    }
+    const start = p.teilauszahlung > 0 ? 'Aus diesem Betrag' : `Ab ${p.auszahlBeginnAlter}`;
+    const renten = e.summeAuszahlungen - e.teilauszahlung;
+    const gesamt = () => {
+      aus.push(' Insgesamt bekommen Sie so ', B(euro(renten)), ' ausgezahlt');
+      if (e.zinsen >= 0.5) aus.push(` – ${euro(e.zinsen)} davon sind Erträge, die erst während der Rentenzeit dazukommen`);
+      aus.push('.');
+    };
+    if (e.modus === 'ewig') {
+      aus.push(`${start} bekommen Sie `, B(renteText), ' Rente – und zwar ', B('für immer'),
+        `. Das funktioniert, weil Ihnen nur die Erträge ausgezahlt werden, die das Geld weiterhin abwirft (${pz(p.zinsEntnahme)} pro Jahr). Das Vermögen von `,
+        B(euro(e.kapitalNachTeilauszahlung)), ' selbst wird nicht angetastet und kann später vererbt werden.');
+    } else if (ziel === 'reichweite') {
+      aus.push(`Wenn Sie sich ${start === 'Aus diesem Betrag' ? 'daraus' : `ab ${p.auszahlBeginnAlter}`} `, B(renteText),
+        ` auszahlen lassen und das restliche Geld weiterhin ${pz(p.zinsEntnahme)} pro Jahr bringt, `);
+      if (Number.isFinite(e.reichweiteJahre)) {
+        aus.push('reicht Ihr Vermögen ', B(jahreText(e.reichweiteJahre)), ' – also ungefähr bis Sie ',
+          B(f0.format(Math.floor(e.endeAlter + 1e-9))), ' sind. Danach ist es aufgebraucht.');
+        gesamt();
+      } else {
+        aus.push('wird Ihr Vermögen ', B('nie aufgebraucht'), ': Die laufenden Erträge sind mindestens so hoch wie Ihre Rente.');
+      }
+    } else {
+      aus.push(`${start} bekommen Sie `, B(jahreText(e.reichweiteJahre)), ' lang, also bis Sie ',
+        B(nf(0, 1).format(e.endeAlter)), ' sind, ', B(renteText), ' Rente');
+      if (p.rentenDynamik && e.anzeigeJahre > 1) {
+        aus.push(`, die jedes Jahr um ${pz(p.rentenDynamik)} steigt – zuletzt sind es ${euro(p.rente * Math.pow(1 + p.rentenDynamik, e.anzeigeJahre - 1), 2)}`);
+      }
+      aus.push(`. Das restliche Geld bleibt so lange angelegt und bringt weiter ${pz(p.zinsEntnahme)} pro Jahr.`);
+      gesamt();
+      aus.push(p.restkapital > 0 ? ' Am Ende bleiben noch ' : ' Danach ist das Vermögen aufgebraucht.');
+      if (p.restkapital > 0) aus.push(B(euro(e.kapitalEnde)), ' übrig.');
+    }
+    absaetze.push(aus);
+
+    const box = $('#ergebnis-text');
+    box.textContent = '';
+    for (const teile of absaetze) {
+      const el = document.createElement('p');
+      for (const t of teile) {
+        if (typeof t === 'string') el.appendChild(document.createTextNode(t));
+        else {
+          const s = document.createElement('strong');
+          s.textContent = t.b;
+          el.appendChild(s);
+        }
+      }
+      box.appendChild(el);
+    }
+  }
+
   function kachel(titel, wert, zusatz, haupt, einheit) {
     const k = document.createElement('div');
     k.className = 'kachel' + (haupt ? ' haupt' : '');
@@ -279,7 +454,7 @@
     // Hauptergebnis = die berechnete Zielgröße
     switch (zustand.ziel) {
       case 'rente':
-        box.appendChild(kachel('Mögliche Rente', euro(p.rente, 2), dauerText, true, proRente));
+        box.appendChild(kachel('Rente', euro(p.rente, 2), dauerText, true, proRente));
         break;
       case 'reichweite':
         box.appendChild(kachel('Reichweite des Kapitals', jahreText(e.reichweiteJahre),
@@ -436,7 +611,7 @@
   }
 
   // Beim Wechsel des Ziels wird das bisherige Ergebnis zur neuen Eingabe –
-  // so rechnet man z. B. aus der möglichen Rente direkt rückwärts.
+  // so rechnet man z. B. aus der berechneten Rente direkt rückwärts.
   for (const r of $$('input[name="ziel"]')) {
     r.addEventListener('change', () => {
       const alt = letztesErgebnis;

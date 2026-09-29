@@ -69,6 +69,13 @@
 .rr .karte-kopf h2, .rr .abschnitt-titel { font-size: 18px; font-weight: 600; letter-spacing: -0.2px; }
 .rr .abschnitt-titel { margin-bottom: 12px; }
 
+/* ---------- Ergebnis als Fließtext ---------- */
+.rr .ergebnis-text { margin-bottom: 12px; padding: 22px 24px; border-left: 2px solid var(--gold); font-size: 16px; line-height: 1.7; }
+.rr .ergebnis-text p { margin: 0; max-width: 78ch; color: #353d4a; }
+.rr .ergebnis-text p + p { margin-top: 12px; }
+.rr .ergebnis-text strong { font-weight: 600; color: var(--text); }
+.rr .ergebnis-text.veraltet { opacity: 0.45; }
+
 /* ---------- Berechnungsziel ---------- */
 .rr .ziel-auswahl { border: 0; margin: 0; padding: 0; min-width: 0; }
 .rr .ziel-auswahl > legend { font-weight: 600; font-size: 18px; letter-spacing: -0.2px; margin-bottom: 14px; padding: 0; }
@@ -132,6 +139,13 @@
 .rr .phase-kopf { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .rr .phase-kopf h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.4px; }
 .rr .phase-sub { margin: 0; color: var(--text-2); font-size: 13.5px; }
+.rr .phase-kennzahl { margin-left: auto; text-align: right; min-width: 0; }
+.rr .phase-kennzahl:empty { display: none; }
+.rr .kennzahl-titel { color: var(--text-2); font-size: 12px; }
+.rr .kennzahl-wert { font-size: 20px; font-weight: 600; line-height: 1.2; letter-spacing: -0.4px; color: var(--calc); }
+.rr .kennzahl-wert .kachel-einheit { font-size: 12px; }
+.rr .kennzahl-zusatz { color: var(--text-3); font-size: 12px; }
+.rr .phase-kennzahl.veraltet { opacity: 0.45; }
 .rr .phase-nr {
   display: grid; place-items: center; width: 34px; height: 34px; flex: none;
   border: 1px solid var(--border-strong); border-radius: 50%;
@@ -140,10 +154,16 @@
 
 .rr .felder { display: grid; gap: 16px; }
 .rr .feld-reihe { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.rr .feld-reihe-rente { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 .rr .feld { display: grid; align-content: start; gap: 6px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .rr .feld[hidden] { display: none; }
 .rr .feld > label, .rr .feld > legend { font-weight: 500; font-size: 14px; padding: 0; }
-.rr .feld-modus > legend { margin-bottom: 6px; }
+.rr .feld-modus { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.rr .feld-modus[hidden] { display: none; }
+.rr .feld-titel { font-weight: 500; font-size: 14px; }
+/* Steht in einer Zeile nur noch ein Feld (das andere ist ausgeblendet), nimmt es die volle Breite ein. */
+.rr .feld-reihe:has(> .feld[hidden]) > .feld:not([hidden]) { grid-column: 1 / -1; }
+.rr .feld-reihe:not(:has(> .feld:not([hidden]))) { display: none; }
 .rr .hilfe { color: var(--text-3); font-size: 12.5px; min-height: 0; }
 .rr .hilfe:empty { display: none; }
 
@@ -263,6 +283,7 @@
 @media (max-width: 900px) {
   .rr .phasen { grid-template-columns: minmax(0, 1fr); }
   .rr .phasen-pfeil { justify-content: center; transform: rotate(90deg); }
+  .rr .phase-kopf { flex-wrap: wrap; }
   .rr .option-knoepfe { margin-left: 0; }
 }
 @media (max-width: 520px) {

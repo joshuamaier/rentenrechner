@@ -43,18 +43,18 @@ unverändert.
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │ Was möchten Sie berechnen?                                   │
-│ Vorwärts:  [Mögliche Rente] [Reichweite des Kapitals]        │
+│ Vorwärts:  [Rente] [Reichweite des Kapitals]                 │
 │ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]         │
 │ Zahlungen vor-/nachschüssig · Startjahr · Link · Reset       │
 ├───────────────────────────┬──────────────────────────────────┤
-│ 1 Ansparphase             │ 2 Auszahlphase                   │
+│ 1 Ansparphase   [Kapital] │ 2 Auszahlphase   [Rente/Alter]   │
 │  Alter heute / Sparen bis │  Auszahlung ab Alter / Zinssatz  │
-│  Anfangskapital           │  Einmalige Teilauszahlung        │
-│  Sparbeitrag + Rhythmus   │  Kapitalverzehr | Ewige Rente    │
-│  Zinssatz / Dynamik       │  Dauer / Restkapital             │
+│  Anfangskapital           │  Teilauszahlung / Restkapital    │
+│  Sparbeitrag + Rhythmus   │  Art: Kapitalverzehr | Ewig      │
+│  Zinssatz / Dynamik       │  Dauer der Auszahlung            │
 │                           │  Rente + Rhythmus / Dynamik      │
 ├───────────────────────────┴──────────────────────────────────┤
-│ Ergebnis-Kacheln (Zielgröße hervorgehoben)                   │
+│ Ergebnis als Fließtext + Kacheln (Zielgröße hervorgehoben)   │
 ├──────────────────────────────────────────────────────────────┤
 │ Grafik: Kapitalverlauf, Summe Ein-/Auszahlungen, Phasen      │
 ├──────────────────────────────────────────────────────────────┤
@@ -62,9 +62,16 @@ unverändert.
 └──────────────────────────────────────────────────────────────┘
 ```
 
+Die Kopfzeilen der beiden Phasen zeigen die Hauptergebnisse: das angesparte Kapital und die Rente –
+bzw. beim Ziel „Reichweite“ das Alter, bis zu dem die Rente reicht. Darunter wiederholt ein Fließtext
+die Eingaben und beschreibt das Ergebnis in Alltagssprache ohne Fachbegriffe, gefolgt von den
+Kennzahl-Kacheln. Ist ein Feld ausgeblendet (z. B. Restkapital bei der ewigen Rente), nimmt das
+Nachbarfeld die volle Zeilenbreite ein.
+Voreingestellt ist eine **ewige Rente** (nur Zinsen werden ausgezahlt).
+
 Das jeweils berechnete Feld wird direkt im Formular als **„berechnet“** markiert (gestrichelter Rahmen)
 und ist schreibgeschützt. Beim Wechsel des Rechenziels wird das bisherige Ergebnis zur neuen Eingabe –
-wer also zuerst die mögliche Rente berechnet und dann auf „Benötigter Sparbeitrag“ klickt, erhält
+wer also zuerst die Rente berechnet und dann auf „Benötigter Sparbeitrag“ klickt, erhält
 wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
 
 ### Eingaben
@@ -72,9 +79,9 @@ wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
 | Ansparphase | Auszahlphase |
 |---|---|
 | Alter heute, Sparen bis Alter | Auszahlung ab Alter (≥ Sparende; dazwischen Ruhephase) |
-| Anfangskapital | Einmalige Teilauszahlung zu Beginn |
+| Anfangskapital | Einmalige Teilauszahlung zu Beginn, Restkapital am Ende |
 | Sparbeitrag, monatlich / vierteljährlich / jährlich | Zinssatz der Auszahlphase |
-| Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer + Restkapital) oder **ewige Rente** |
+| Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer) oder **ewige Rente** |
 | Zinssatz der Ansparphase | Rente, monatlich / vierteljährlich / jährlich, Dynamik (% p.a.) |
 
 Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende), Startjahr.
@@ -83,7 +90,7 @@ Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende
 
 | Ziel | Gegeben | Berechnet |
 |---|---|---|
-| Mögliche Rente | Sparplan, Dauer bzw. ewige Rente | Rente |
+| Rente | Sparplan, Dauer bzw. ewige Rente | Rente |
 | Reichweite des Kapitals | Sparplan, Rente | Wie lange das Kapital reicht (oder „unbegrenzt“) |
 | Benötigter Sparbeitrag | Wunschrente, übrige Werte | Sparbeitrag |
 | Benötigtes Anfangskapital | Wunschrente, übrige Werte | Anfangskapital |
