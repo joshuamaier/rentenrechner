@@ -1,0 +1,95 @@
+# Rentenrechner
+
+Web-Rechner für die private Altersvorsorge: links die **Ansparphase**, rechts die **Auszahlphase** –
+mit Schnellergebnissen, einer Grafik des Kapitalverlaufs und einer Tabelle mit den Werten pro Jahr.
+Es kann **vorwärts** (aus dem Sparplan die Rente) und **rückwärts** (aus der Wunschrente den nötigen
+Sparplan) gerechnet werden.
+
+Reine statische Seite ohne Build-Schritt und ohne externe Abhängigkeiten – `index.html` im Browser
+öffnen oder beliebig hosten.
+
+```bash
+npm start   # lokaler Server auf http://localhost:8080
+npm test    # Tests des Rechenkerns (Node ≥ 18)
+```
+
+## Konzept
+
+### Aufbau der Seite
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ Was möchten Sie berechnen?                                   │
+│ Vorwärts:  [Mögliche Rente] [Reichweite des Kapitals]        │
+│ Rückwärts: [Sparbeitrag] [Anfangskapital] [Zinssatz]         │
+│ Zahlungen vor-/nachschüssig · Startjahr · Link · Reset       │
+├───────────────────────────┬──────────────────────────────────┤
+│ 1 Ansparphase             │ 2 Auszahlphase                   │
+│  Alter heute / Sparen bis │  Auszahlung ab Alter / Zinssatz  │
+│  Anfangskapital           │  Einmalige Teilauszahlung        │
+│  Sparbeitrag + Rhythmus   │  Kapitalverzehr | Ewige Rente    │
+│  Zinssatz / Dynamik       │  Dauer / Restkapital             │
+│                           │  Rente + Rhythmus / Dynamik      │
+├───────────────────────────┴──────────────────────────────────┤
+│ Ergebnis-Kacheln (Zielgröße hervorgehoben)                   │
+├──────────────────────────────────────────────────────────────┤
+│ Grafik: Kapitalverlauf, Summe Ein-/Auszahlungen, Phasen      │
+├──────────────────────────────────────────────────────────────┤
+│ Tabelle: Werte pro Jahr (+ CSV-Export)                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Das jeweils berechnete Feld wird direkt im Formular als **„berechnet“** markiert (gestrichelter Rahmen)
+und ist schreibgeschützt. Beim Wechsel des Rechenziels wird das bisherige Ergebnis zur neuen Eingabe –
+wer also zuerst die mögliche Rente berechnet und dann auf „Benötigter Sparbeitrag“ klickt, erhält
+wieder denselben Sparbeitrag und kann die Wunschrente von dort aus verändern.
+
+### Eingaben
+
+| Ansparphase | Auszahlphase |
+|---|---|
+| Alter heute, Sparen bis Alter | Auszahlung ab Alter (≥ Sparende; dazwischen Ruhephase) |
+| Anfangskapital | Einmalige Teilauszahlung zu Beginn |
+| Sparbeitrag, monatlich / vierteljährlich / jährlich | Zinssatz der Auszahlphase |
+| Dynamik des Sparbeitrags (% p.a.) | Art: **Kapitalverzehr** (Dauer + Restkapital) oder **ewige Rente** |
+| Zinssatz der Ansparphase | Rente, monatlich / vierteljährlich / jährlich, Dynamik (% p.a.) |
+
+Global: Zahlungen vorschüssig (Periodenbeginn) oder nachschüssig (Periodenende), Startjahr.
+
+### Rechenziele
+
+| Ziel | Gegeben | Berechnet |
+|---|---|---|
+| Mögliche Rente | Sparplan, Dauer bzw. ewige Rente | Rente |
+| Reichweite des Kapitals | Sparplan, Rente | Wie lange das Kapital reicht (oder „unbegrenzt“) |
+| Benötigter Sparbeitrag | Wunschrente, übrige Werte | Sparbeitrag |
+| Benötigtes Anfangskapital | Wunschrente, übrige Werte | Anfangskapital |
+| Benötigter Zinssatz | Wunschrente, übrige Werte | Zinssatz der Ansparphase |
+
+### Rechenmodell
+
+- Simulation in **Monatsschritten** mit dem **konformen Monatszins** `iₘ = (1 + p)^(1/12) − 1`;
+  der eingegebene Zinssatz entspricht damit der effektiven Jahresrendite, unabhängig vom Rhythmus.
+- **Ruhephase:** Liegt der Auszahlbeginn nach dem Sparende, wächst das Kapital ohne Beiträge mit dem
+  Zinssatz der Ansparphase weiter.
+- **Teilauszahlung:** wird zu Beginn der Auszahlphase vor der ersten Rente entnommen.
+- **Kapitalverzehr:** Die Rente wird so bestimmt, dass nach der Auszahldauer genau das gewünschte
+  Restkapital übrig bleibt (bei Rentendynamik steigt die Rate jährlich).
+- **Ewige Rente:** Es wird nur der Zinsertrag ausgezahlt, das Kapital bleibt konstant:
+  `R = K · iₚ` (nachschüssig) bzw. `R = K · iₚ / (1 + iₚ)` (vorschüssig) mit dem Periodenzins `iₚ`.
+- **Rückwärtsrechnung:** Zuerst wird der Kapitalbedarf zu Auszahlbeginn ermittelt (Barwert der
+  Renten + Teilauszahlung + abgezinstes Restkapital). Sparbeitrag und Anfangskapital gehen linear ein
+  und werden exakt gelöst, der Zinssatz per Bisektion.
+- Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten, Inflation (die Rentendynamik kann als
+  Inflationsausgleich genutzt werden).
+
+### Dateien
+
+| Datei | Inhalt |
+|---|---|
+| `index.html` | Seitenstruktur |
+| `css/style.css` | Gestaltung inkl. Dark Mode und Mobilansicht |
+| `js/rechner.js` | Rechenkern (ohne DOM, in Browser und Node nutzbar) |
+| `js/diagramm.js` | SVG-Grafik mit Tooltip |
+| `js/app.js` | Formular, Ergebnisse, Tabelle, CSV-Export, Link-Teilen (Werte im URL-Hash) |
+| `tests/rechner.test.js` | Tests gegen Barwert-/Endwertformeln und Hin-/Rückrechnung |

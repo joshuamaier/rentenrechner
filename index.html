@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rentenrechner</title>
+  <meta name="description" content="Rentenrechner mit Anspar- und Auszahlphase: Kapitalaufbau, Teilauszahlung, befristete oder ewige Rente – vorwärts und rückwärts gerechnet.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="kopf">
+    <div class="kopf-inhalt">
+      <h1>Rentenrechner</h1>
+      <p>Kapital ansparen, zum Rentenbeginn entnehmen – vorwärts und rückwärts gerechnet.</p>
+    </div>
+  </header>
+
+  <main class="seite">
+    <!-- Berechnungsziel -->
+    <section class="karte ziel-karte" aria-labelledby="ziel-titel">
+      <h2 id="ziel-titel" class="sr-only">Berechnungsziel</h2>
+      <fieldset class="ziel-auswahl">
+        <legend>Was möchten Sie berechnen?</legend>
+        <div class="ziel-gruppen">
+          <div class="ziel-gruppe">
+            <span class="ziel-gruppe-titel">Vorwärts</span>
+            <div class="segmente">
+              <label><input type="radio" name="ziel" value="rente" checked><span>Mögliche Rente</span></label>
+              <label><input type="radio" name="ziel" value="reichweite"><span>Reichweite des Kapitals</span></label>
+            </div>
+          </div>
+          <div class="ziel-gruppe">
+            <span class="ziel-gruppe-titel">Rückwärts (aus Wunschrente)</span>
+            <div class="segmente">
+              <label><input type="radio" name="ziel" value="sparrate"><span>Benötigter Sparbeitrag</span></label>
+              <label><input type="radio" name="ziel" value="anfangskapital"><span>Benötigtes Anfangskapital</span></label>
+              <label><input type="radio" name="ziel" value="zinsAnspar"><span>Benötigter Zinssatz</span></label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <div class="optionen">
+        <label class="option">
+          <span>Zahlungen</span>
+          <select id="f-vorschuessig">
+            <option value="true">zu Periodenbeginn (vorschüssig)</option>
+            <option value="false">zu Periodenende (nachschüssig)</option>
+          </select>
+        </label>
+        <label class="option">
+          <span>Startjahr</span>
+          <input id="f-startJahr" data-feld="startJahr" data-typ="jahr" inputmode="numeric" class="kurz">
+        </label>
+        <div class="option-knoepfe">
+          <button type="button" class="knopf-sekundaer" id="btn-teilen">Link kopieren</button>
+          <button type="button" class="knopf-sekundaer" id="btn-reset">Zurücksetzen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Eingaben: links Ansparphase, rechts Auszahlphase -->
+    <div class="phasen">
+      <section class="karte phase phase-anspar" aria-labelledby="anspar-titel">
+        <header class="phase-kopf">
+          <span class="phase-nr" aria-hidden="true">1</span>
+          <div>
+            <h2 id="anspar-titel">Ansparphase</h2>
+            <p class="phase-sub">Kapital aufbauen</p>
+          </div>
+        </header>
+
+        <div class="felder">
+          <div class="feld-reihe">
+            <div class="feld" data-feld="alterHeute">
+              <label for="f-alterHeute">Alter heute</label>
+              <div class="eingabe"><input id="f-alterHeute" data-typ="alter" inputmode="numeric"><span class="einheit">Jahre</span></div>
+            </div>
+            <div class="feld" data-feld="sparEndeAlter">
+              <label for="f-sparEndeAlter">Sparen bis Alter</label>
+              <div class="eingabe"><input id="f-sparEndeAlter" data-typ="alter" inputmode="numeric"><span class="einheit">Jahre</span></div>
+              <small class="hilfe" data-hilfe="sparEndeAlter"></small>
+            </div>
+          </div>
+
+          <div class="feld" data-feld="anfangskapital">
+            <label for="f-anfangskapital">Anfangskapital</label>
+            <div class="eingabe"><input id="f-anfangskapital" data-typ="euro" inputmode="decimal"><span class="einheit">€</span></div>
+            <small class="hilfe" data-hilfe="anfangskapital"></small>
+          </div>
+
+          <div class="feld" data-feld="sparrate">
+            <label for="f-sparrate">Sparbeitrag</label>
+            <div class="eingabe">
+              <input id="f-sparrate" data-typ="euro" inputmode="decimal"><span class="einheit">€</span>
+              <select id="f-sparIntervall" aria-label="Rhythmus des Sparbeitrags">
+                <option value="12">monatlich</option>
+                <option value="4">vierteljährlich</option>
+                <option value="1">jährlich</option>
+              </select>
+            </div>
+            <small class="hilfe" data-hilfe="sparrate"></small>
+          </div>
+
+          <div class="feld-reihe">
+            <div class="feld" data-feld="zinsAnspar">
+              <label for="f-zinsAnspar">Zinssatz</label>
+              <div class="eingabe"><input id="f-zinsAnspar" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
+              <small class="hilfe" data-hilfe="zinsAnspar"></small>
+            </div>
+            <div class="feld" data-feld="sparDynamik">
+              <label for="f-sparDynamik">Dynamik Sparbeitrag</label>
+              <div class="eingabe"><input id="f-sparDynamik" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="phasen-pfeil" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <section class="karte phase phase-entnahme" aria-labelledby="entnahme-titel">
+        <header class="phase-kopf">
+          <span class="phase-nr" aria-hidden="true">2</span>
+          <div>
+            <h2 id="entnahme-titel">Auszahlphase</h2>
+            <p class="phase-sub">Kapital entnehmen</p>
+          </div>
+        </header>
+
+        <div class="felder">
+          <div class="feld-reihe">
+            <div class="feld" data-feld="auszahlBeginnAlter">
+              <label for="f-auszahlBeginnAlter">Auszahlung ab Alter</label>
+              <div class="eingabe"><input id="f-auszahlBeginnAlter" data-typ="alter" inputmode="numeric"><span class="einheit">Jahre</span></div>
+              <small class="hilfe" data-hilfe="auszahlBeginnAlter"></small>
+            </div>
+            <div class="feld" data-feld="zinsEntnahme">
+              <label for="f-zinsEntnahme">Zinssatz</label>
+              <div class="eingabe"><input id="f-zinsEntnahme" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
+            </div>
+          </div>
+
+          <div class="feld" data-feld="teilauszahlung">
+            <label for="f-teilauszahlung">Einmalige Teilauszahlung zu Beginn</label>
+            <div class="eingabe"><input id="f-teilauszahlung" data-typ="euro" inputmode="decimal"><span class="einheit">€</span></div>
+            <small class="hilfe" data-hilfe="teilauszahlung"></small>
+          </div>
+
+          <fieldset class="feld feld-modus" data-feld="entnahmeModus">
+            <legend>Art der Rente</legend>
+            <div class="segmente segmente-klein">
+              <label><input type="radio" name="entnahmeModus" value="dauer" checked><span>Kapitalverzehr</span></label>
+              <label><input type="radio" name="entnahmeModus" value="ewig"><span>Ewige Rente (nur Zinsen)</span></label>
+            </div>
+          </fieldset>
+
+          <div class="feld-reihe">
+            <div class="feld" data-feld="entnahmeDauer">
+              <label for="f-entnahmeDauer">Dauer der Auszahlung</label>
+              <div class="eingabe"><input id="f-entnahmeDauer" data-typ="jahre" inputmode="numeric"><span class="einheit">Jahre</span></div>
+              <small class="hilfe" data-hilfe="entnahmeDauer"></small>
+            </div>
+            <div class="feld" data-feld="restkapital">
+              <label for="f-restkapital">Restkapital am Ende</label>
+              <div class="eingabe"><input id="f-restkapital" data-typ="euro" inputmode="decimal"><span class="einheit">€</span></div>
+            </div>
+          </div>
+
+          <div class="feld" data-feld="rente">
+            <label for="f-rente">Rente</label>
+            <div class="eingabe">
+              <input id="f-rente" data-typ="euro" inputmode="decimal"><span class="einheit">€</span>
+              <select id="f-rentenIntervall" aria-label="Rhythmus der Rente">
+                <option value="12">monatlich</option>
+                <option value="4">vierteljährlich</option>
+                <option value="1">jährlich</option>
+              </select>
+            </div>
+            <small class="hilfe" data-hilfe="rente"></small>
+          </div>
+
+          <div class="feld" data-feld="rentenDynamik">
+            <label for="f-rentenDynamik">Dynamik der Rente</label>
+            <div class="eingabe"><input id="f-rentenDynamik" data-typ="prozent" inputmode="decimal"><span class="einheit">% p.a.</span></div>
+            <small class="hilfe">Jährliche Steigerung, z. B. als Inflationsausgleich</small>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="meldungen" class="meldungen" role="status" aria-live="polite"></div>
+
+    <!-- Schnellergebnisse -->
+    <section aria-labelledby="ergebnis-titel">
+      <h2 id="ergebnis-titel" class="abschnitt-titel">Ergebnis</h2>
+      <div id="kacheln" class="kacheln"></div>
+    </section>
+
+    <!-- Grafik -->
+    <section class="karte" aria-labelledby="diagramm-titel">
+      <div class="karte-kopf">
+        <h2 id="diagramm-titel">Kapitalverlauf</h2>
+        <ul class="legende" id="legende"></ul>
+      </div>
+      <div id="diagramm" class="diagramm"></div>
+    </section>
+
+    <!-- Tabelle -->
+    <section class="karte" aria-labelledby="tabelle-titel">
+      <div class="karte-kopf">
+        <h2 id="tabelle-titel">Werte pro Jahr</h2>
+        <button type="button" class="knopf-sekundaer" id="btn-csv">Als CSV herunterladen</button>
+      </div>
+      <div class="tabelle-rahmen">
+        <table id="tabelle" class="tabelle"></table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="fuss">
+    <p>
+      Modellrechnung ohne Gewähr. Verzinsung mit konformem Monatszins (der angegebene Zinssatz entspricht der
+      effektiven Jahresrendite). Nicht berücksichtigt: Steuern, Sozialabgaben, Kosten und Inflation
+      (Rentendynamik kann als Inflationsausgleich genutzt werden). In einer Ruhephase zwischen Sparende und
+      Auszahlbeginn wird das Kapital mit dem Zinssatz der Ansparphase verzinst.
+    </p>
+  </footer>
+
+  <script src="js/rechner.js"></script>
+  <script src="js/diagramm.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
